@@ -36,12 +36,12 @@
 
 namespace ros2_cmv
 {
-    class MsgLoaderApp : public QWidget
+    class PluginGeneratorApp : public QWidget
     {
         Q_OBJECT
 
     public:
-        explicit MsgLoaderApp(QWidget *parent = nullptr);
+        explicit PluginGeneratorApp(QWidget *parent = nullptr);
 
     private slots:
         void loadMsgFile(std::string &filePathStr);
@@ -50,7 +50,6 @@ namespace ros2_cmv
 
     private:
         // UI Elements
-        // QPushButton *loadButton;
         QTextEdit *contentDisplay;
         QPushButton *processButton;
 

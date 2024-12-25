@@ -3,7 +3,7 @@
 <package format="3">
   <name>ros2_cmv</name>
   <version>1.0.0</version>
-  <description>Auto-generated code for a custom ROS 2 Message type</description>
+  <description>Auto-generated code for an RViz plugin of a custom ROS 2 Message type</description>
   <maintainer email="auto-generated@auto-generated.com">NA</maintainer>
   <license>MIT</license>
 
@@ -14,6 +14,7 @@
   <depend>rviz_rendering</depend>
   <depend>rviz_default_plugins</depend>
   <depend>ros2_cmv</depend>
+  <depend>ros2_cmv_example</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -35,6 +35,7 @@ namespace PROJECT_NAME
 
     void CustomMessageDisplay::onEnable()
     {
+        std::lock_guard<std::mutex> lock(displayMutex_);
         for (const auto &[key, instance] : displayInstances_)
         {
             instance->onEnable();
@@ -43,6 +44,7 @@ namespace PROJECT_NAME
 
     void CustomMessageDisplay::onInitialize()
     {
+        std::lock_guard<std::mutex> lock(displayMutex_);
         MFDClass::onInitialize();
         for (size_t i = 0; i < variableTypes.size(); ++i)
         {
@@ -55,6 +57,7 @@ namespace PROJECT_NAME
 
     void CustomMessageDisplay::update(float wall_dt, float ros_dt)
     {
+        std::lock_guard<std::mutex> lock(displayMutex_);
         for (const auto &[key, instance] : displayInstances_)
         {
             instance->update(wall_dt, ros_dt);
@@ -63,6 +66,7 @@ namespace PROJECT_NAME
 
     void CustomMessageDisplay::reset()
     {
+        std::lock_guard<std::mutex> lock(displayMutex_);
         MFDClass::reset();
         for (const auto &[key, instance] : displayInstances_)
         {
@@ -72,11 +76,13 @@ namespace PROJECT_NAME
 
     void CustomMessageDisplay::processMessage(CustomMessage::ConstSharedPtr msg)
     {
+        std::lock_guard<std::mutex> lock(displayMutex_);
         processCustomMessage(msg, enabledInstances_);
     }
 
     void CustomMessageDisplay::updateMemberVisibility()
     {
+        std::lock_guard<std::mutex> lock(displayMutex_);
         for (size_t idx = 0; idx < memberVisibilityProperties_.size(); idx++)
         {
             auto property = memberVisibilityProperties_[idx];
@@ -92,7 +98,7 @@ namespace PROJECT_NAME
         }
     }
 
-} // namespace ros2_cmv
+} // namespace PROJECT_NAME
 
 #include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(PROJECT_NAME::CustomMessageDisplay, rviz_common::Display)

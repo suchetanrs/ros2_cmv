@@ -3,8 +3,8 @@
 <package format="3">
   <name>ros2_cmv</name>
   <version>1.0.0</version>
-  <description>Show polar grid in rviz</description>
-  <maintainer email="huatsai42@gmail.com">HuaTsai</maintainer>
+  <description>A package to generate custom rviz plugins for custom messages.</description>
+  <maintainer email="rssuchetan@gmail.com">HuaTsai</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

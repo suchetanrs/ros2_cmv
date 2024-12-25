@@ -335,8 +335,6 @@ namespace ros2_cmv
             ExposedWrenchStampedDisplay::processMessage(wrenchStampedConst);
         }
     };
-
-    // Register the class for the "geometry_msgs/Wrench" message type
     REGISTER_DISPLAY_CLASS("geometry_msgs/Wrench", ExposedWrenchDisplay)
 };
 

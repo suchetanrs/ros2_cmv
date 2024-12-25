@@ -98,6 +98,22 @@ namespace ros2_cmv
 
         return msg_file_path;
     };
+
+    inline std::string getPackagePrefix(std::string package_name)
+    {
+        // Find the package prefix directory
+        std::string package_prefix;
+        try
+        {
+            package_prefix = ament_index_cpp::get_package_prefix(package_name);
+        }
+        catch (const std::runtime_error &e)
+        {
+            std::cerr << "Could not find package prefix for " << package_name << ": " << e.what() << "\n";
+            throw std::runtime_error("Could not find package prefix for " + package_name + ". Is it installed?");
+        }
+        return package_prefix;
+    };
 };
 
 #endif

@@ -2,7 +2,8 @@
 
 namespace ros2_cmv
 {
-    void generatePluginXML(const std::string &libpath, const std::string &pluginName, const std::string &output_file)
+    void generatePluginXML(const std::string &libpath, const std::string &pluginName, const std::string &output_file,
+    const std::string &project_name)
     {
         try
         {
@@ -17,7 +18,7 @@ namespace ros2_cmv
             // Write the XML content
             ofs << "<?xml version=\"1.0\"?>\n";
             ofs << "<library path=\"" << libpath << "\">\n";
-            ofs << "  <class name=\"" << pluginName << "\" type=\"ros2_cmv::" << "CustomMessageDisplay" << "\" base_class_type=\"rviz_common::Display\">\n";
+            ofs << "  <class name=\"" << pluginName << "\" type=\"" << project_name << "::" << "CustomMessageDisplay" << "\" base_class_type=\"rviz_common::Display\">\n";
             ofs << "    <description>Custom message display for RViz</description>\n";
             ofs << "  </class>\n";
             ofs << "</library>\n";
@@ -32,7 +33,8 @@ namespace ros2_cmv
         }
     }
 
-    void generatePackageXML(const std::string &new_name, const std::string &input_file, const std::string &output_file)
+    void generatePackageXML(const std::string &new_name, const std::string &input_file, const std::string &output_file,
+                            std::string additional_package)
     {
         try
         {
@@ -61,6 +63,18 @@ namespace ros2_cmv
             {
                 std::cerr << "Error: <name> tag not found in " << input_file << std::endl;
                 return;
+            }
+
+            size_t last_depend_end_pos = content.rfind("</depend>");
+            if (last_depend_end_pos != std::string::npos)
+            {
+                last_depend_end_pos += 9;
+                const std::string new_line = "\n  <depend>" + additional_package + "</depend>";
+                content.insert(last_depend_end_pos, new_line);
+            }
+            else
+            {
+                throw std::runtime_error("Error: No <depend> lines found in " + input_file);
             }
 
             // Write the modified content to the output file

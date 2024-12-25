@@ -18,7 +18,7 @@ namespace ros2_cmv
         std::string content = content_stream.str();
         ifs.close();
 
-        // Replace the project name in the content
+        // 1. Replace the project name in the content
         size_t pos = content.find("project(");
         if (pos != std::string::npos)
         {
@@ -54,19 +54,7 @@ namespace ros2_cmv
             }
             else
             {
-                // If no find_package exists, insert after project()
-                size_t project_end = content.find(")", pos);
-                if (project_end != std::string::npos)
-                {
-                    content.insert(project_end + 1, "\n" + find_package_entry + "\n");
-                    std::cout << "Inserted find_package entry for '" << additional_package << "' after project()." << std::endl;
-                }
-                else
-                {
-                    // If project() is also missing, prepend at the beginning
-                    content = find_package_entry + "\n" + content;
-                    std::cout << "Inserted find_package entry for '" << additional_package << "' at the beginning." << std::endl;
-                }
+                throw std::runtime_error("Could not find any find_package entries in the base CMakeLists.txt.");
             }
         }
         else
@@ -102,22 +90,7 @@ namespace ros2_cmv
         }
         else
         {
-            std::cerr << "Warning: 'set(dependencies ...)' block not found. Inserting dependencies set." << std::endl;
-            // Insert the dependencies set after project()
-            size_t project_end = content.find(")", pos);
-            if (project_end != std::string::npos)
-            {
-                std::string dependencies_set = "\nset(dependencies\n  " + additional_package + "\n)\n";
-                content.insert(project_end + 1, dependencies_set);
-                std::cout << "Inserted dependencies set with '" << additional_package << "'." << std::endl;
-            }
-            else
-            {
-                // If project() is also missing, append at the end
-                std::string dependencies_set = "\nset(dependencies\n  " + additional_package + "\n)\n";
-                content += dependencies_set;
-                std::cout << "Appended dependencies set with '" << additional_package << "' at the end." << std::endl;
-            }
+            throw std::runtime_error("Could not find dependencies set in the base CMakeLists.txt.");
         }
 
         // Write the modified content to the output file

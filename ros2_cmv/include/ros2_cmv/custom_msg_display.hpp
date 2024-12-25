@@ -35,15 +35,16 @@ namespace PROJECT_NAME
     protected:
         void reset() override;
         void processMessage(CustomMessage::ConstSharedPtr msg) override;
-private Q_SLOTS:
+    private Q_SLOTS:
         void updateMemberVisibility();
 
     private:
+        std::mutex displayMutex_;
         std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>> displayInstances_;
         std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>> enabledInstances_;
         std::vector<rviz_common::properties::BoolProperty *> memberVisibilityProperties_;
     };
 
-}; // namespace ros2_cmv
+}; // namespace PROJECT_NAME
 
 #endif // CUSTOM_MSG_DISPLAY_HPP_

@@ -44,6 +44,8 @@ namespace ros2_cmv
     std::string convertToNamespace(const std::string& input);
 
     std::string convertToPackageName(const std::string& input);
+
+    std::string convertToRvizPluginName(const std::string& input);
 };
 
 #endif

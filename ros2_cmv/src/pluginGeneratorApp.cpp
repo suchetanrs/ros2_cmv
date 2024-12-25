@@ -1,22 +1,17 @@
-#include "ros2_cmv/msgLoaderApp.hpp"
+#include "ros2_cmv/pluginGeneratorApp.hpp"
 
 namespace ros2_cmv
 {
     // Constructor
-    MsgLoaderApp::MsgLoaderApp(QWidget *parent) : QWidget(parent)
+    PluginGeneratorApp::PluginGeneratorApp(QWidget *parent) : QWidget(parent)
     {
         // Main vertical layout
         QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-        // --- Section 1: Load .msg File ---
-        // loadButton = new QPushButton("Load .msg File", this);
+        // --- Section 1: Content Display ---
         contentDisplay = new QTextEdit(this);
         contentDisplay->setReadOnly(true);
-
-        // mainLayout->addWidget(loadButton);
         mainLayout->addWidget(contentDisplay);
-
-        // connect(loadButton, &QPushButton::clicked, this, &MsgLoaderApp::loadMsgFile);
 
         // --- Section 2: Interface Dropdown ---
         QHBoxLayout *dropdownLayout = new QHBoxLayout();
@@ -54,11 +49,11 @@ namespace ros2_cmv
         processButton = new QPushButton("Process Inputs", this);
         mainLayout->addWidget(processButton);
 
-        connect(processButton, &QPushButton::clicked, this, &MsgLoaderApp::processInput);
+        connect(processButton, &QPushButton::clicked, this, &PluginGeneratorApp::processInput);
     }
 
     // Function to populate the dropdown with interface names
-    void MsgLoaderApp::populateInterfaceDropdown()
+    void PluginGeneratorApp::populateInterfaceDropdown()
     {
         std::vector<Interface> interfaces = listInterfaces();
 
@@ -80,10 +75,10 @@ namespace ros2_cmv
         }
 
         connect(interfaceComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                this, &MsgLoaderApp::printSelectedInterface);
+                this, &PluginGeneratorApp::printSelectedInterface);
     }
 
-    void MsgLoaderApp::printSelectedInterface()
+    void PluginGeneratorApp::printSelectedInterface()
     {
         QString selectedText = interfaceComboBox->currentText();
         std::string selectedTextString = selectedText.toStdString();
@@ -97,7 +92,7 @@ namespace ros2_cmv
     }
 
     // Slot to load and display a .msg file
-    void MsgLoaderApp::loadMsgFile(std::string &filePathStr)
+    void PluginGeneratorApp::loadMsgFile(std::string &filePathStr)
     {
         auto filePath = QString::fromStdString(filePathStr);
         QFile file(filePath);
@@ -113,13 +108,22 @@ namespace ros2_cmv
     }
 
     // Slot to process input data
-    void MsgLoaderApp::processInput()
+    void PluginGeneratorApp::processInput()
     {
-        std::string packageName = "example_custom_plugin";
-        // Retrieve and store the input values
-        // QString selectedInterface = interfaceComboBox->currentText();
+        auto selectedText = interfaceComboBox->currentText().toStdString();
+        std::string packageName = convertToRvizPluginName(selectedText);
+
         QString outputPath = customPluginPath->text();
         auto outputStrPath = outputPath.toStdString();
+        if (outputPath.isEmpty())
+        {
+            QMessageBox::warning(this, "Warning", "Output path is empty. Please provide a valid path.");
+            return;
+        }
+        if (outputStrPath.back() == '/') 
+        {
+            outputStrPath.pop_back(); 
+        }
         std::cout << "Selected output path: " << outputStrPath << std::endl;
         auto outputCorePath = outputStrPath + "/src/" + packageName;
 
@@ -143,17 +147,16 @@ namespace ros2_cmv
             }
             catch (const std::filesystem::filesystem_error &e)
             {
-                std::cerr << "Error creating directory " << directory << ": " << e.what() << std::endl;
+                QMessageBox::critical(this, "Error", QString("Failed to create directory: %1").arg(directory.c_str()));
             }
         }
 
-        auto selectedText = interfaceComboBox->currentText().toStdString();
         generate_cpp_header(msgFilePath, outputCorePath + "/include/" + packageName + "/custom_msg_metadata.hpp", convertToIncludePath(selectedText), convertToNamespace(selectedText));
-        generatePluginXML(packageName, packageName, outputCorePath + "/plugin.xml");
-        generatePackageXML(packageName, "/home/rosuser/ros2_rolling/src/cmv/ros2_cmv/base_files/base_package.xml", outputCorePath + "/package.xml");
-        generateCMakeLists(packageName, "/home/rosuser/ros2_rolling/src/cmv/ros2_cmv/base_files/base_cmakelists.txt", outputCorePath + "/CMakeLists.txt", convertToPackageName(selectedText));
-        copyFile("/home/rosuser/ros2_rolling/src/cmv/ros2_cmv/src/custom_msg_display.cpp", outputCorePath + "/src/custom_msg_display.cpp");
-        copyFile("/home/rosuser/ros2_rolling/src/cmv/ros2_cmv/include/ros2_cmv/custom_msg_display.hpp", outputCorePath + "/include/" + packageName + "/custom_msg_display.hpp");
+        generatePluginXML(packageName, packageName, outputCorePath + "/plugin.xml", packageName);
+        generatePackageXML(packageName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_package.xml", outputCorePath + "/package.xml", convertToPackageName(selectedText));
+        generateCMakeLists(packageName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_cmakelists.txt", outputCorePath + "/CMakeLists.txt", convertToPackageName(selectedText));
+        copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/custom_msg_display.cpp", outputCorePath + "/src/custom_msg_display.cpp");
+        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/custom_msg_display.hpp", outputCorePath + "/include/" + packageName + "/custom_msg_display.hpp");
 
         // QString value2 = input2->text();
         // QString value3 = input3->text();
@@ -170,8 +173,6 @@ namespace ros2_cmv
         //                   .arg(value5);
 
         // QMessageBox::information(this, "Input Values", message);
-
-        // TODO: Replace the above with your desired processing logic
     }
 };
 
@@ -180,12 +181,12 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    ros2_cmv::MsgLoaderApp mainWindow;
-    mainWindow.setWindowTitle("MSG File Loader");
+    ros2_cmv::PluginGeneratorApp mainWindow;
+    mainWindow.setWindowTitle("RViz Plugin Generator");
     mainWindow.resize(800, 600);
     mainWindow.show();
 
     return app.exec();
 }
 
-#include "msgLoaderApp.moc"
+#include "pluginGeneratorApp.moc"

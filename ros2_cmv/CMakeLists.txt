@@ -28,7 +28,7 @@ qt5_wrap_cpp(MOC_FILES
 )
 
 qt5_wrap_cpp(MOC_FILES2
-  include/ros2_cmv/msgLoaderApp.hpp
+  include/ros2_cmv/pluginGeneratorApp.hpp
 )
 
 include_directories(${rviz_default_plugins_INCLUDE_DIRS})
@@ -43,31 +43,13 @@ add_executable(msg_loader
   src/generators/header_generator.cpp
   src/generators/xml_generator.cpp
   src/generators/cmakelists_generator.cpp
-  src/msgLoaderApp.cpp
+  src/pluginGeneratorApp.cpp
   ${MOC_FILES}
   ${MOC_FILES2}
 )
 
 target_compile_definitions(custom_msg_display PRIVATE PROJECT_NAME=${PROJECT_NAME})
 target_compile_definitions(msg_loader PRIVATE PROJECT_NAME=${PROJECT_NAME})
-
-###########
-# add_executable(list_ros2_interfaces src/list_ros2_interfaces.cpp)
-# ament_target_dependencies(list_ros2_interfaces rclcpp ament_index_cpp)
-
-# install(TARGETS
-#   list_ros2_interfaces
-#   DESTINATION lib/${PROJECT_NAME}
-# )
-
-# add_executable(get_msg_file src/get_msg_file.cpp)
-# ament_target_dependencies(get_msg_file rclcpp ament_index_cpp)
-
-# install(TARGETS
-#   get_msg_file
-#   DESTINATION lib/${PROJECT_NAME}
-# )
-############
 
 target_include_directories(custom_msg_display
   PUBLIC
@@ -117,6 +99,11 @@ install(
 install(
   DIRECTORY include/
   DESTINATION include
+)
+
+install(
+  FILES base_files/base_cmakelists.txt base_files/base_package.xml src/custom_msg_display.cpp
+  DESTINATION share/${PROJECT_NAME}/base_files
 )
 
 ament_export_include_directories(include)

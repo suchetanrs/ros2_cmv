@@ -74,111 +74,111 @@ namespace ros2_cmv
         "wrench_raw",
     };
 
-    inline void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<IExposedDisplay>> &displayInstances)
+    inline void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<IExposedDisplay>> &enabledInstances)
     {
-        if (displayInstances.find("accel") != displayInstances.end())
+        if (enabledInstances.find("accel") != enabledInstances.end())
         {
-            displayInstances["accel"]->processMessage(std::make_shared<const geometry_msgs::msg::AccelStamped>(msg->accel));
+            enabledInstances["accel"]->processMessage(std::make_shared<const geometry_msgs::msg::AccelStamped>(msg->accel));
         }
-        if (displayInstances.find("accel_raw") != displayInstances.end())
+        if (enabledInstances.find("accel_raw") != enabledInstances.end())
         {
-            displayInstances["accel_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Accel>(msg->accel_raw));
+            enabledInstances["accel_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Accel>(msg->accel_raw));
         }
-        if (displayInstances.find("camera_info") != displayInstances.end())
+        if (enabledInstances.find("camera_info") != enabledInstances.end())
         {
-            displayInstances["camera_info"]->processMessage(std::make_shared<const sensor_msgs::msg::CameraInfo>(msg->camera_info));
+            enabledInstances["camera_info"]->processMessage(std::make_shared<const sensor_msgs::msg::CameraInfo>(msg->camera_info));
         }
-        if (displayInstances.find("grid_cells") != displayInstances.end())
+        if (enabledInstances.find("grid_cells") != enabledInstances.end())
         {
-            displayInstances["grid_cells"]->processMessage(std::make_shared<const nav_msgs::msg::GridCells>(msg->grid_cells));
+            enabledInstances["grid_cells"]->processMessage(std::make_shared<const nav_msgs::msg::GridCells>(msg->grid_cells));
         }
-        if (displayInstances.find("point1") != displayInstances.end())
+        if (enabledInstances.find("point1") != enabledInstances.end())
         {
-            displayInstances["point1"]->processMessage(std::make_shared<const geometry_msgs::msg::PointStamped>(msg->point1));
+            enabledInstances["point1"]->processMessage(std::make_shared<const geometry_msgs::msg::PointStamped>(msg->point1));
         }
-        if (displayInstances.find("point2") != displayInstances.end())
+        if (enabledInstances.find("point2") != enabledInstances.end())
         {
-            displayInstances["point2"]->processMessage(std::make_shared<const geometry_msgs::msg::PointStamped>(msg->point2));
+            enabledInstances["point2"]->processMessage(std::make_shared<const geometry_msgs::msg::PointStamped>(msg->point2));
         }
-        if (displayInstances.find("point_raw") != displayInstances.end())
+        if (enabledInstances.find("point_raw") != enabledInstances.end())
         {
-            displayInstances["point_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Point>(msg->point_raw));
+            enabledInstances["point_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Point>(msg->point_raw));
         }
-        if (displayInstances.find("polygon1") != displayInstances.end())
+        if (enabledInstances.find("polygon1") != enabledInstances.end())
         {
-            displayInstances["polygon1"]->processMessage(std::make_shared<const geometry_msgs::msg::PolygonStamped>(msg->polygon1));
+            enabledInstances["polygon1"]->processMessage(std::make_shared<const geometry_msgs::msg::PolygonStamped>(msg->polygon1));
         }
-        if (displayInstances.find("polygon_raw") != displayInstances.end())
+        if (enabledInstances.find("polygon_raw") != enabledInstances.end())
         {
-            displayInstances["polygon_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Polygon>(msg->polygon_raw));
+            enabledInstances["polygon_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Polygon>(msg->polygon_raw));
         }
-        if (displayInstances.find("pose") != displayInstances.end())
+        if (enabledInstances.find("pose") != enabledInstances.end())
         {
-            displayInstances["pose"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseStamped>(msg->pose));
+            enabledInstances["pose"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseStamped>(msg->pose));
         }
-        if (displayInstances.find("pose_raw") != displayInstances.end())
+        if (enabledInstances.find("pose_raw") != enabledInstances.end())
         {
-            displayInstances["pose_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Pose>(msg->pose_raw));
+            enabledInstances["pose_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Pose>(msg->pose_raw));
         }
-        if (displayInstances.find("pose_array") != displayInstances.end())
+        if (enabledInstances.find("pose_array") != enabledInstances.end())
         {
-            displayInstances["pose_array"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseArray>(msg->pose_array));
+            enabledInstances["pose_array"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseArray>(msg->pose_array));
         }
-        if (displayInstances.find("pose_with_covariance") != displayInstances.end())
+        if (enabledInstances.find("pose_with_covariance") != enabledInstances.end())
         {
-            displayInstances["pose_with_covariance"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseWithCovarianceStamped>(msg->pose_with_covariance));
+            enabledInstances["pose_with_covariance"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseWithCovarianceStamped>(msg->pose_with_covariance));
         }
-        if (displayInstances.find("pose_with_covariance_raw") != displayInstances.end())
+        if (enabledInstances.find("pose_with_covariance_raw") != enabledInstances.end())
         {
-            displayInstances["pose_with_covariance_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseWithCovariance>(msg->pose_with_covariance_raw));
+            enabledInstances["pose_with_covariance_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::PoseWithCovariance>(msg->pose_with_covariance_raw));
         }
-        if (displayInstances.find("path") != displayInstances.end())
+        if (enabledInstances.find("path") != enabledInstances.end())
         {
-            displayInstances["path"]->processMessage(std::make_shared<const nav_msgs::msg::Path>(msg->path));
+            enabledInstances["path"]->processMessage(std::make_shared<const nav_msgs::msg::Path>(msg->path));
         }
-        if (displayInstances.find("odometry") != displayInstances.end())
+        if (enabledInstances.find("odometry") != enabledInstances.end())
         {
-            displayInstances["odometry"]->processMessage(std::make_shared<const nav_msgs::msg::Odometry>(msg->odometry));
+            enabledInstances["odometry"]->processMessage(std::make_shared<const nav_msgs::msg::Odometry>(msg->odometry));
         }
-        if (displayInstances.find("map") != displayInstances.end())
+        if (enabledInstances.find("map") != enabledInstances.end())
         {
-            displayInstances["map"]->processMessage(std::make_shared<const nav_msgs::msg::OccupancyGrid>(msg->map));
+            enabledInstances["map"]->processMessage(std::make_shared<const nav_msgs::msg::OccupancyGrid>(msg->map));
         }
-        if (displayInstances.find("marker") != displayInstances.end())
+        if (enabledInstances.find("marker") != enabledInstances.end())
         {
-            displayInstances["marker"]->processMessage(std::make_shared<const visualization_msgs::msg::Marker>(msg->marker));
+            enabledInstances["marker"]->processMessage(std::make_shared<const visualization_msgs::msg::Marker>(msg->marker));
         }
-        if (displayInstances.find("marker_array") != displayInstances.end())
+        if (enabledInstances.find("marker_array") != enabledInstances.end())
         {
-            displayInstances["marker_array"]->processMessage(std::make_shared<const visualization_msgs::msg::MarkerArray>(msg->marker_array));
+            enabledInstances["marker_array"]->processMessage(std::make_shared<const visualization_msgs::msg::MarkerArray>(msg->marker_array));
         }
-        if (displayInstances.find("laser_scan") != displayInstances.end())
+        if (enabledInstances.find("laser_scan") != enabledInstances.end())
         {
-            displayInstances["laser_scan"]->processMessage(std::make_shared<const sensor_msgs::msg::LaserScan>(msg->laser_scan));
+            enabledInstances["laser_scan"]->processMessage(std::make_shared<const sensor_msgs::msg::LaserScan>(msg->laser_scan));
         }
-        if (displayInstances.find("point_cloud2") != displayInstances.end())
+        if (enabledInstances.find("point_cloud2") != enabledInstances.end())
         {
-            displayInstances["point_cloud2"]->processMessage(std::make_shared<const sensor_msgs::msg::PointCloud2>(msg->point_cloud2));
+            enabledInstances["point_cloud2"]->processMessage(std::make_shared<const sensor_msgs::msg::PointCloud2>(msg->point_cloud2));
         }
-        if (displayInstances.find("range") != displayInstances.end())
+        if (enabledInstances.find("range") != enabledInstances.end())
         {
-            displayInstances["range"]->processMessage(std::make_shared<const sensor_msgs::msg::Range>(msg->range));
+            enabledInstances["range"]->processMessage(std::make_shared<const sensor_msgs::msg::Range>(msg->range));
         }
-        if (displayInstances.find("twist") != displayInstances.end())
+        if (enabledInstances.find("twist") != enabledInstances.end())
         {
-            displayInstances["twist"]->processMessage(std::make_shared<const geometry_msgs::msg::TwistStamped>(msg->twist));
+            enabledInstances["twist"]->processMessage(std::make_shared<const geometry_msgs::msg::TwistStamped>(msg->twist));
         }
-        if (displayInstances.find("twist_raw") != displayInstances.end())
+        if (enabledInstances.find("twist_raw") != enabledInstances.end())
         {
-            displayInstances["twist_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Twist>(msg->twist_raw));
+            enabledInstances["twist_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Twist>(msg->twist_raw));
         }
-        if (displayInstances.find("wrench") != displayInstances.end())
+        if (enabledInstances.find("wrench") != enabledInstances.end())
         {
-            displayInstances["wrench"]->processMessage(std::make_shared<const geometry_msgs::msg::WrenchStamped>(msg->wrench));
+            enabledInstances["wrench"]->processMessage(std::make_shared<const geometry_msgs::msg::WrenchStamped>(msg->wrench));
         }
-        if (displayInstances.find("wrench_raw") != displayInstances.end())
+        if (enabledInstances.find("wrench_raw") != enabledInstances.end())
         {
-            displayInstances["wrench_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Wrench>(msg->wrench_raw));
+            enabledInstances["wrench_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Wrench>(msg->wrench_raw));
         }
     }
 };

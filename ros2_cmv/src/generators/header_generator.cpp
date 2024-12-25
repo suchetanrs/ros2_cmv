@@ -95,20 +95,21 @@ namespace ros2_cmv
         return package + "::msg::" + message;
     }
 
-    std::string convertCamelCaseToSnakeCase(const std::string& input) {
+    std::string convertCamelCaseToSnakeCase(const std::string &input)
+    {
         std::string result = input;
-        
+
         // First substitution
         std::regex first_pattern(R"((.)([A-Z][a-z]+))");
         result = std::regex_replace(result, first_pattern, "$1_$2");
-        
+
         // Second substitution
         std::regex second_pattern(R"(([a-z0-9])([A-Z]))");
         result = std::regex_replace(result, second_pattern, "$1_$2");
-        
+
         // Convert to lowercase
         std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-        
+
         return result;
     }
 
@@ -163,14 +164,14 @@ namespace ros2_cmv
         ofs << "};\n\n";
 
         // processCustomMessage Function
-        ofs << "inline void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>>& displayInstances)\n";
+        ofs << "inline void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>>& enabledInstances)\n";
         ofs << "{\n";
         for (const auto &msg : messages)
         {
             std::string cpp_type = convert_ros_type_to_cpp(msg.type);
             std::string var_name = msg.name;
-            ofs << "    if(displayInstances.find(\"" << var_name << "\") != displayInstances.end()) {\n";
-            ofs << "        displayInstances[\"" << var_name << "\"]->processMessage(std::make_shared<const " << cpp_type << ">(msg->" << var_name << "));\n";
+            ofs << "    if(enabledInstances.find(\"" << var_name << "\") != enabledInstances.end()) {\n";
+            ofs << "        enabledInstances[\"" << var_name << "\"]->processMessage(std::make_shared<const " << cpp_type << ">(msg->" << var_name << "));\n";
             ofs << "    }\n";
         }
         ofs << "}\n\n";
@@ -211,47 +212,77 @@ namespace ros2_cmv
         std::cout << "File copied from " << input_path << " to " << output_path << std::endl;
     }
 
-    std::string convertToIncludePath(const std::string& input) {
+    std::string convertToIncludePath(const std::string &input)
+    {
         // Find the position of the last '/'
         size_t pos = input.rfind('/');
-        if (pos == std::string::npos) {
-            // If no '/', assume entire input is the class name
-            return "msg/" + convertCamelCaseToSnakeCase(input) + ".hpp";
+        if (pos == std::string::npos)
+        {
+            throw std::runtime_error("Invalid input: No '/' found in the input.");
         }
-        
+
         // Split the input into prefix and class name
         std::string prefix = input.substr(0, pos);
         std::string className = input.substr(pos + 1);
-        
+
         // Convert the class name to snake_case and append ".hpp"
         std::string snakeCaseName = convertCamelCaseToSnakeCase(className) + ".hpp";
-        
+
         // Construct the include path
         return prefix + "/msg/" + snakeCaseName;
     }
 
-    std::string convertToNamespace(const std::string& input) {
+    std::string convertToNamespace(const std::string &input)
+    {
         // Find the position of the last '/'
         size_t pos = input.rfind('/');
-        if (pos == std::string::npos) {
-            // If no '/', assume entire input is the class name
-            return "msg::" + input;
+        if (pos == std::string::npos)
+        {
+            throw std::runtime_error("Invalid input: No '/' found in the input.");
         }
-        
+
         // Split the input into prefix and class name
         std::string prefix = input.substr(0, pos);
         std::string className = input.substr(pos + 1);
-        
+
         // Construct the namespace string
         return prefix + "::msg::" + className;
     }
 
     // Function to extract the package name from the given input
-    std::string convertToPackageName(const std::string& input) {
+    std::string convertToPackageName(const std::string &input)
+    {
         // Find the position of the last '/'
         size_t pos = input.rfind('/');
-        
+
         // Extract and return the package name (substring before the last '/')
         return input.substr(0, pos);
+    }
+
+    std::string convertToRvizPluginName(const std::string &input)
+    {
+        // Find the slash
+        std::size_t slashPos = input.find('/');
+        if (slashPos == std::string::npos)
+        {
+            throw std::runtime_error("Invalid input: No '/' found in the input.");
+        }
+
+        // Extract the parts before and after the slash
+        std::string packagePart = input.substr(0, slashPos);
+        std::string classPart = input.substr(slashPos + 1);
+
+        // Convert the classPart to lowercase
+        std::string classPartLower = classPart;
+        std::transform(
+            classPartLower.begin(),
+            classPartLower.end(),
+            classPartLower.begin(),
+            ::tolower);
+
+        // Construct the final string
+        // e.g. "ros2_cmv_example_example_rviz_plugin"
+        return "rviz_plugin_" + packagePart + "_" + classPartLower;
+        // return packagePart + "_" + classPartLower + "_rviz_plugin";
     }
 }

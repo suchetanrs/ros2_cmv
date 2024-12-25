@@ -6,8 +6,8 @@
 
 namespace ros2_cmv
 {
-    template<typename MessageType>
-    const MessageType& castMessage(std::any& param)
+    template <typename MessageType>
+    const MessageType &castMessage(std::any &param)
     {
         if (!param.has_value())
         {
@@ -132,28 +132,4 @@ namespace ros2_cmv
     }
 
 };
-
-// Proxy class for casting std::any to the desired type
-struct AnyCaster
-{
-    const std::any &any_ref;
-
-    template <typename T>
-    operator T() const
-    {
-        try
-        {
-            return std::any_cast<T>(any_ref);
-        }
-        catch (const std::bad_any_cast &e)
-        {
-            throw std::runtime_error("Bad any_cast in AnyCaster: " + std::string(e.what()));
-        }
-    }
-};
-
-// Helper function to create an AnyCaster instance
-inline AnyCaster castParam(const std::any& param) {
-    return AnyCaster{param};
-}
 #endif // EXPOSED_DISPLAY_CORE_HPP_

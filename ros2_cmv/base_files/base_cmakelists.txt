@@ -20,7 +20,8 @@ set(dependencies
   rviz_rendering
   rviz_default_plugins
   ros2_cmv
-  ros2_cmv_example)
+  ros2_cmv_example
+  )
 
 set(CMAKE_AUTOMOC ON)
 qt5_wrap_cpp(MOC_FILES
