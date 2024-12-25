@@ -40,11 +40,16 @@ add_library(custom_msg_display
 
 add_executable(msg_loader
   src/custom_msg_display.cpp
-  src/header_generator.cpp
+  src/generators/header_generator.cpp
+  src/generators/xml_generator.cpp
+  src/generators/cmakelists_generator.cpp
   src/msgLoaderApp.cpp
   ${MOC_FILES}
   ${MOC_FILES2}
 )
+
+target_compile_definitions(custom_msg_display PRIVATE PROJECT_NAME=${PROJECT_NAME})
+target_compile_definitions(msg_loader PRIVATE PROJECT_NAME=${PROJECT_NAME})
 
 ###########
 # add_executable(list_ros2_interfaces src/list_ros2_interfaces.cpp)
@@ -93,7 +98,7 @@ ament_target_dependencies(msg_loader
   ament_index_cpp
 )
 
-target_link_libraries(custom_msg_display rviz_default_plugins::rviz_default_plugins)
+target_link_libraries(custom_msg_display rviz_default_plugins::rviz_default_plugins Qt5::Widgets)
 target_link_libraries(msg_loader Qt5::Widgets)
 
 install(TARGETS

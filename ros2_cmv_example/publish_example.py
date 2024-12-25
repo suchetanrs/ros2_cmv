@@ -3,8 +3,9 @@ import numpy as np
 import struct
 from rclpy.node import Node
 from std_msgs.msg import Header
-from geometry_msgs.msg import PointStamped, Point, PolygonStamped, AccelStamped, TwistStamped
-from geometry_msgs.msg import Polygon, Point32, PoseArray, Pose, Quaternion, PoseStamped, WrenchStamped, PoseWithCovarianceStamped
+from geometry_msgs.msg import PointStamped, Point, PolygonStamped, AccelStamped, Accel, TwistStamped, Twist
+from geometry_msgs.msg import Polygon, Point32, PoseArray, Pose, Quaternion, PoseStamped, WrenchStamped, Wrench
+from geometry_msgs.msg import PoseWithCovarianceStamped, PoseWithCovariance
 from nav_msgs.msg import Path, Odometry, OccupancyGrid, GridCells
 from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Range, CameraInfo
 from visualization_msgs.msg import Marker, MarkerArray
@@ -40,6 +41,20 @@ class CustomMessagePublisher(Node):
         accel_stamped.accel.angular.x = 0.0  # Example angular acceleration in x
         accel_stamped.accel.angular.y = 0.1  # Example angular acceleration in y
         accel_stamped.accel.angular.z = 0.2  # Example angular acceleration in z
+
+        # Create an AccelStamped message
+        accel = Accel()
+        # accel.header = header
+
+        # Set the linear acceleration
+        accel.linear.x = 1.0  # Example linear acceleration in x
+        accel.linear.y = 0.0  # Example linear acceleration in y
+        accel.linear.z = 0.5  # Example linear acceleration in z
+
+        # Set the angular acceleration
+        accel.angular.x = 0.0  # Example angular acceleration in x
+        accel.angular.y = 0.1  # Example angular acceleration in y
+        accel.angular.z = 0.2  # Example angular acceleration in z
 
         # Create a CameraInfo message
         camera_info = CameraInfo()
@@ -108,6 +123,8 @@ class CustomMessagePublisher(Node):
         point2.header = header
         point2.point = Point(x=0.0, y=0.0, z=-3.0)  # Sample coordinates for point2
 
+        point_raw = Point(x=10.0, y=10.0, z=10.0)
+
         # Create a polygon1 (PolygonStamped)
         polygon1 = PolygonStamped()
         polygon1.header = header
@@ -120,6 +137,14 @@ class CustomMessagePublisher(Node):
         ]
         
         polygon1.polygon = Polygon(points=polygon_points)  # Assign points to the polygon
+
+        polygon_points2 = [
+            Point32(x=3.0, y=0.0, z=4.0),
+            Point32(x=5.0, y=0.0, z=4.0),
+            Point32(x=4.0, y=1.0, z=4.0)
+        ]
+
+        polygon_raw = Polygon(points=polygon_points2)
 
         # Create a PoseArray (for multiple poses)
         pose_array = PoseArray()
@@ -278,6 +303,14 @@ class CustomMessagePublisher(Node):
         wrench_stamped_msg.wrench.torque.y = 0.5  # Torque around Y axis
         wrench_stamped_msg.wrench.torque.z = 0.2  # Torque around Z axis
 
+        wrench_raw = Wrench()
+        wrench_raw.force.x = 5.0  # Force in X direction
+        wrench_raw.force.y = 2.0   # Force in Y direction
+        wrench_raw.force.z = 1.0   # Force in Z direction
+        wrench_raw.torque.x = 1.0  # Torque around X axis
+        wrench_raw.torque.y = 0.5  # Torque around Y axis
+        wrench_raw.torque.z = 0.2  # Torque around Z axis
+
         self.get_logger().info(f'Publishing wrench stamped: Frame({wrench_stamped_msg.header.frame_id}), '
                             f'Force({wrench_stamped_msg.wrench.force.x}, {wrench_stamped_msg.wrench.force.y}, {wrench_stamped_msg.wrench.force.z}), '
                             f'Torque({wrench_stamped_msg.wrench.torque.x}, {wrench_stamped_msg.wrench.torque.y}, {wrench_stamped_msg.wrench.torque.z})')
@@ -385,6 +418,15 @@ class CustomMessagePublisher(Node):
         pose_stamped.pose.orientation.z = 0.4
         pose_stamped.pose.orientation.w = 1.0
 
+        pose_raw = Pose()
+        pose_raw.position.x = 8.0
+        pose_raw.position.y = 6.0
+        pose_raw.position.z = -3.0
+        pose_raw.orientation.x = 0.0
+        pose_raw.orientation.y = 0.0
+        pose_raw.orientation.z = 0.0
+        pose_raw.orientation.w = 1.0
+
         pose_with_covariance_stamped = PoseWithCovarianceStamped()
         pose_with_covariance_stamped.header = header
 
@@ -409,6 +451,25 @@ class CustomMessagePublisher(Node):
             0.0, 0.0, 0.0, 0.0, 0.0, 0.1
         ]
 
+        pose_with_covariance = PoseWithCovariance()
+        pose_with_covariance.pose.position.x = 5.0
+        pose_with_covariance.pose.position.y = 8.0
+        pose_with_covariance.pose.position.z = -1.0
+
+        pose_with_covariance.pose.orientation.x = 0.0
+        pose_with_covariance.pose.orientation.y = 0.0
+        pose_with_covariance.pose.orientation.z = 0.0
+        pose_with_covariance.pose.orientation.w = 1.0
+
+        pose_with_covariance.covariance = [
+            1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        ]
+
         # Create a TwistStamped message
         twist_stamped = TwistStamped()
         twist_stamped.header = header
@@ -423,15 +484,26 @@ class CustomMessagePublisher(Node):
         twist_stamped.twist.angular.y = 0.0  # Angular velocity around y-axis
         twist_stamped.twist.angular.z = 0.3  # Angular velocity around z-axis
 
+        twist = Twist()
+        twist.linear.x = 5.5  # Linear velocity in x-direction
+        twist.linear.y = 0.0  # Linear velocity in y-direction
+        twist.linear.z = 0.0  # Linear velocity in z-direction
+        twist.angular.x = 1.0  # Angular velocity around x-axis
+        twist.angular.y = 0.0  # Angular velocity around y-axis
+        twist.angular.z = 1.2  # Angular velocity around z-axis
+
         # Create a custom message and populate it
         custom_msg = Example()
         custom_msg.header = header
         custom_msg.accel = accel_stamped
+        custom_msg.accel_raw = accel
         custom_msg.camera_info = camera_info
         custom_msg.grid_cells = grid_cells
         custom_msg.point1 = point1
         custom_msg.point2 = point2
+        custom_msg.point_raw = point_raw
         custom_msg.polygon1 = polygon1
+        custom_msg.polygon_raw = polygon_raw
         custom_msg.pose_array = pose_array
         custom_msg.path = path
         custom_msg.odometry = odometry
@@ -442,9 +514,13 @@ class CustomMessagePublisher(Node):
         custom_msg.marker = marker
         custom_msg.marker_array = marker_array
         custom_msg.pose = pose_stamped
+        custom_msg.pose_raw = pose_raw
         custom_msg.pose_with_covariance = pose_with_covariance_stamped
+        custom_msg.pose_with_covariance_raw = pose_with_covariance
         custom_msg.twist = twist_stamped
+        custom_msg.twist_raw = twist
         custom_msg.wrench = wrench_stamped_msg
+        custom_msg.wrench_raw = wrench_raw
 
         # Log the message for debugging
         self.get_logger().info(f"Publishing CustomMessage with Point1: {point1.point} and Point2: {point2.point}")

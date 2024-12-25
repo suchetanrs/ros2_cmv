@@ -1,13 +1,18 @@
 std_msgs/Header header
 geometry_msgs/AccelStamped accel
+geometry_msgs/Accel accel_raw
 sensor_msgs/CameraInfo camera_info
 nav_msgs/GridCells grid_cells
 geometry_msgs/PointStamped point1
 geometry_msgs/PointStamped point2
+geometry_msgs/Point point_raw
 geometry_msgs/PolygonStamped polygon1
+geometry_msgs/Polygon polygon_raw
 geometry_msgs/PoseStamped pose
+geometry_msgs/Pose pose_raw
 geometry_msgs/PoseArray pose_array
 geometry_msgs/PoseWithCovarianceStamped pose_with_covariance
+geometry_msgs/PoseWithCovariance pose_with_covariance_raw
 nav_msgs/Path path
 nav_msgs/Odometry odometry
 nav_msgs/OccupancyGrid map
@@ -17,4 +22,6 @@ sensor_msgs/LaserScan laser_scan
 sensor_msgs/PointCloud2 point_cloud2
 sensor_msgs/Range range
 geometry_msgs/TwistStamped twist
+geometry_msgs/Twist twist_raw
 geometry_msgs/WrenchStamped wrench
+geometry_msgs/Wrench wrench_raw

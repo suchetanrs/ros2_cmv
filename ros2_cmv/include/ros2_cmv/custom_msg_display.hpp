@@ -10,9 +10,16 @@
 #include <rviz_common/properties/vector_property.hpp>
 #include <rviz_common/ros_topic_display.hpp>
 
-#include "ros2_cmv/custom_msg_metadata.hpp"
+// Helper macro to convert a macro value to a string
+#define STRINGIFY_HELPER(x) #x
+#define STRINGIFY(x) STRINGIFY_HELPER(x)
 
-namespace ros2_cmv
+// Macro to concatenate PROJECT_NAME with a header file
+#define INCLUDE_PROJECT_HEADER(header) STRINGIFY(PROJECT_NAME/header)
+
+#include INCLUDE_PROJECT_HEADER(custom_msg_metadata.hpp)
+
+namespace PROJECT_NAME
 {
     class CustomMessageDisplay : public rviz_common::MessageFilterDisplay<CustomMessage>
     {
@@ -28,10 +35,15 @@ namespace ros2_cmv
     protected:
         void reset() override;
         void processMessage(CustomMessage::ConstSharedPtr msg) override;
+private Q_SLOTS:
+        void updateMemberVisibility();
 
-        std::unordered_map<std::string, std::shared_ptr<IExposedDisplay>> displayInstances_;
+    private:
+        std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>> displayInstances_;
+        std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>> enabledInstances_;
+        std::vector<rviz_common::properties::BoolProperty *> memberVisibilityProperties_;
     };
 
-} // namespace ros2_cmv
+}; // namespace ros2_cmv
 
 #endif // CUSTOM_MSG_DISPLAY_HPP_

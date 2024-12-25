@@ -89,6 +89,7 @@
         "valarray": "cpp",
         "variant": "cpp",
         "*.ipp": "cpp",
-        "qpushbutton": "cpp"
+        "qpushbutton": "cpp",
+        "filesystem": "cpp"
     }
 }

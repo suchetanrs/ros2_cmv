@@ -4,44 +4,10 @@
 #include <any>
 #include <rviz_common/display_context.hpp>
 
-// polymorphism: Use this as common interface for all displays
-class IExposedDisplay
+namespace ros2_cmv
 {
-public:
-    virtual ~IExposedDisplay() = default;
-    virtual void onInitialize() = 0;
-    virtual void onEnable() = 0;
-    virtual void processMessage(std::any param) = 0;
-    virtual void reset() = 0;
-    virtual void update(float wall_dt, float ros_dt) = 0;
-};
-
-template <typename BaseDisplay, typename MessageType>
-class ExposedDisplay : public BaseDisplay, public IExposedDisplay
-{
-public:
-    ExposedDisplay(rviz_common::DisplayContext *context) : BaseDisplay()
-    {
-        this->context_ = context;
-        this->scene_manager_ = this->context_->getSceneManager();
-        this->scene_node_ = this->scene_manager_->getRootSceneNode()->createChildSceneNode();
-        this->fixed_frame_ = this->context_->getFixedFrame();
-    }
-
-    virtual ~ExposedDisplay() = default;
-
-    void onInitialize() override { BaseDisplay::onInitialize(); }
-
-    void onEnable() override { BaseDisplay::onEnable(); }
-
-    void reset() override { BaseDisplay::reset(); }
-
-    void update(float wall_dt, float ros_dt) override
-    {
-        BaseDisplay::update(wall_dt, ros_dt);
-    }
-
-    void processMessage(std::any param) override
+    template<typename MessageType>
+    const MessageType& castMessage(std::any& param)
     {
         if (!param.has_value())
         {
@@ -51,52 +17,106 @@ public:
         try
         {
             const MessageType &actualParam = std::any_cast<const MessageType &>(param);
-            BaseDisplay::processMessage(actualParam);
+            return actualParam;
         }
         catch (const std::bad_any_cast &)
         {
             throw std::runtime_error("Invalid parameter type for this class");
         }
     }
-};
 
-// Base Factory Class
-class DisplayFactory
-{
-public:
-    using Creator = std::function<std::shared_ptr<IExposedDisplay>(rviz_common::DisplayContext *)>;
-
-    static DisplayFactory &instance()
+    // polymorphism: Use this as common interface for all displays
+    class IExposedDisplay
     {
-        static DisplayFactory inst;
-        return inst;
-    }
+    public:
+        virtual ~IExposedDisplay() = default;
+        virtual void onInitialize() = 0;
+        virtual void onEnable() = 0;
+        virtual void processMessage(std::any param) = 0;
+        virtual void reset() = 0;
+        virtual void update(float wall_dt, float ros_dt) = 0;
+    };
 
-    // Register a class with its string name
-    bool registerDisplay(const std::string &name, Creator creator)
+    template <typename BaseDisplay, typename MessageType>
+    class ExposedDisplay : public BaseDisplay, public IExposedDisplay
     {
-        return creators.emplace(name, creator).second;
-    }
-
-    // Create an instance of the requested class
-    std::shared_ptr<IExposedDisplay> createDisplay(
-        const std::string &name, rviz_common::DisplayContext *context)
-    {
-        auto it = creators.find(name);
-        if (it != creators.end())
+    public:
+        ExposedDisplay(rviz_common::DisplayContext *context) : BaseDisplay()
         {
-            return it->second(context);
+            this->context_ = context;
+            this->scene_manager_ = this->context_->getSceneManager();
+            this->scene_node_ = this->scene_manager_->getRootSceneNode()->createChildSceneNode();
+            this->fixed_frame_ = this->context_->getFixedFrame();
         }
-        else
-        {
-            throw std::runtime_error("Unknown display type encountered while creating display: " + name + 
-            " !! Check exposed_displays.hpp for supported displays for custom plugin generation.");
-        }
-    }
 
-private:
-    std::unordered_map<std::string, Creator> creators;
-};
+        virtual ~ExposedDisplay() = default;
+
+        void onInitialize() override { BaseDisplay::onInitialize(); }
+
+        void onEnable() override { BaseDisplay::onEnable(); }
+
+        void reset() override { BaseDisplay::reset(); }
+
+        void update(float wall_dt, float ros_dt) override
+        {
+            BaseDisplay::update(wall_dt, ros_dt);
+        }
+
+        void processMessage(std::any param) override
+        {
+            if (!param.has_value())
+            {
+                throw std::runtime_error("No parameter provided");
+            }
+            try
+            {
+                const MessageType &actualParam = std::any_cast<const MessageType &>(param);
+                BaseDisplay::processMessage(actualParam);
+            }
+            catch (const std::bad_any_cast &)
+            {
+                throw std::runtime_error("Invalid parameter type for this class");
+            }
+        }
+    };
+
+    // Base Factory Class
+    class DisplayFactory
+    {
+    public:
+        using Creator = std::function<std::shared_ptr<IExposedDisplay>(rviz_common::DisplayContext *)>;
+
+        static DisplayFactory &instance()
+        {
+            static DisplayFactory inst;
+            return inst;
+        }
+
+        // Register a class with its string name
+        bool registerDisplay(const std::string &name, Creator creator)
+        {
+            return creators.emplace(name, creator).second;
+        }
+
+        // Create an instance of the requested class
+        std::shared_ptr<IExposedDisplay> createDisplay(
+            const std::string &name, rviz_common::DisplayContext *context)
+        {
+            auto it = creators.find(name);
+            if (it != creators.end())
+            {
+                return it->second(context);
+            }
+            else
+            {
+                throw std::runtime_error("Unknown display type encountered while creating display: " + name +
+                                         " !! Check exposed_displays.hpp for supported displays for custom plugin generation.");
+            }
+        }
+
+    private:
+        std::unordered_map<std::string, Creator> creators;
+    };
 
 // Macro for registering classes
 #define REGISTER_DISPLAY_CLASS(NAME, TYPE)                                                                                                                                                  \
@@ -111,4 +131,29 @@ private:
         } staticReg##TYPE;                                                                                                                                                                  \
     }
 
+};
+
+// Proxy class for casting std::any to the desired type
+struct AnyCaster
+{
+    const std::any &any_ref;
+
+    template <typename T>
+    operator T() const
+    {
+        try
+        {
+            return std::any_cast<T>(any_ref);
+        }
+        catch (const std::bad_any_cast &e)
+        {
+            throw std::runtime_error("Bad any_cast in AnyCaster: " + std::string(e.what()));
+        }
+    }
+};
+
+// Helper function to create an AnyCaster instance
+inline AnyCaster castParam(const std::any& param) {
+    return AnyCaster{param};
+}
 #endif // EXPOSED_DISPLAY_CORE_HPP_
