@@ -16,6 +16,7 @@ include_directories(
 
 rosidl_generate_interfaces(${PROJECT_NAME}
 "msg/Example.msg"
+"msg/Example2.msg"
 DEPENDENCIES builtin_interfaces geometry_msgs nav_msgs sensor_msgs visualization_msgs
 )
 

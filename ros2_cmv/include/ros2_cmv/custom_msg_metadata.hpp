@@ -8,6 +8,7 @@
 
 #include "ros2_cmv_example/msg/example.hpp"
 #include "ros2_cmv/exposed_displays.hpp"
+#include "ros2_cmv/common_values.hpp"
 
 namespace ros2_cmv
 {
@@ -76,6 +77,7 @@ namespace ros2_cmv
 
     inline void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<IExposedDisplay>> &enabledInstances)
     {
+        globalValues.setHeader(msg->header);
         if (enabledInstances.find("accel") != enabledInstances.end())
         {
             enabledInstances["accel"]->processMessage(std::make_shared<const geometry_msgs::msg::AccelStamped>(msg->accel));

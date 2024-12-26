@@ -2,15 +2,15 @@
 
 namespace ros2_cmv
 {
-    void generateCMakeLists(const std::string &project_name, const std::string &input_file, 
-    const std::string &output_file, std::string additional_package)
+    void generateCMakeLists(const std::string &project_name, const std::string &input_file,
+                            const std::string &output_file, std::string additional_package)
     {
         // Read the content of the input file
         std::ifstream ifs(input_file);
         if (!ifs.is_open())
         {
-            std::cerr << "Error: Unable to open " << input_file << " for reading." << std::endl;
-            return;
+            RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << input_file << " for reading.");
+            throw std::runtime_error("Unable to open " + input_file + " for reading.");
         }
 
         std::ostringstream content_stream;
@@ -43,13 +43,13 @@ namespace ros2_cmv
                 if (insert_pos != std::string::npos)
                 {
                     content.insert(insert_pos + 1, find_package_entry + "\n");
-                    std::cout << "Added find_package entry for '" << additional_package << "'." << std::endl;
+                    RCLCPP_INFO_STREAM(logger, "Added find_package entry for '" << additional_package << "'.");
                 }
                 else
                 {
                     // If no newline found after last find_package, append at the end
                     content += "\n" + find_package_entry + "\n";
-                    std::cout << "Appended find_package entry for '" << additional_package << "' at the end." << std::endl;
+                    RCLCPP_INFO_STREAM(logger, "Appended find_package entry for '" << additional_package << "' at the end.");
                 }
             }
             else
@@ -59,7 +59,7 @@ namespace ros2_cmv
         }
         else
         {
-            std::cout << "find_package for '" << additional_package << "' already exists." << std::endl;
+            RCLCPP_WARN_STREAM(logger, "find_package for '" << additional_package << "' already exists.");
         }
 
         // 3. Add the additional package to the dependencies set
@@ -76,16 +76,17 @@ namespace ros2_cmv
                 {
                     // Insert the additional package before the closing parenthesis
                     content.insert(close_paren, additional_package);
-                    std::cout << "Added '" << additional_package << "' to dependencies." << std::endl;
+                    RCLCPP_INFO_STREAM(logger, "Added '" << additional_package << "' to dependencies.");
                 }
                 else
                 {
-                    std::cout << "Dependency '" << additional_package << "' already exists." << std::endl;
+                    RCLCPP_WARN_STREAM(logger, "Dependency '" << additional_package << "' already exists.");
                 }
             }
             else
             {
-                std::cerr << "Warning: Malformed dependencies set. Unable to add dependency." << std::endl;
+                RCLCPP_ERROR_STREAM(logger, "Warning: Malformed dependencies set. Unable to add dependency.");
+                throw std::runtime_error("Malformed dependencies set in the base CMakeLists.txt.");
             }
         }
         else
@@ -97,13 +98,13 @@ namespace ros2_cmv
         std::ofstream ofs(output_file);
         if (!ofs.is_open())
         {
-            std::cerr << "Error: Unable to open " << output_file << " for writing." << std::endl;
-            return;
+            RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << output_file << " for writing.");
+            throw std::runtime_error("Unable to open " + output_file + " for writing.");
         }
 
         ofs << content;
         ofs.close();
 
-        std::cout << "Generated " << output_file << " with project name: " << project_name << std::endl;
+        RCLCPP_INFO_STREAM(logger, "Generated " << output_file << " with project name: " << project_name);
     }
 }

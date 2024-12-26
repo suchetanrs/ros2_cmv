@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QSettings>
 
 #include <iostream>
 #include <sstream>
@@ -42,6 +43,8 @@ namespace ros2_cmv
 
     public:
         explicit PluginGeneratorApp(QWidget *parent = nullptr);
+        ~PluginGeneratorApp();
+        void saveSettings();
 
     private slots:
         void loadMsgFile(std::string &filePathStr);
@@ -52,6 +55,7 @@ namespace ros2_cmv
         // UI Elements
         QTextEdit *contentDisplay;
         QPushButton *processButton;
+        QPushButton *saveButton;
 
         QLineEdit *customPluginPath;
         // QLineEdit *input2;
@@ -61,6 +65,7 @@ namespace ros2_cmv
 
         QComboBox *interfaceComboBox;
         std::string msgFilePath;
+        std::vector<int> validIdx;
 
         void populateInterfaceDropdown();
     };

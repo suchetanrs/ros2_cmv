@@ -3,7 +3,7 @@
 namespace ros2_cmv
 {
     void generatePluginXML(const std::string &libpath, const std::string &pluginName, const std::string &output_file,
-    const std::string &project_name)
+                           const std::string &project_name)
     {
         try
         {
@@ -11,8 +11,8 @@ namespace ros2_cmv
             std::ofstream ofs(output_file);
             if (!ofs.is_open())
             {
-                std::cerr << "Error: Unable to open " << output_file << " for writing." << std::endl;
-                return;
+                RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << output_file << " for writing.");
+                throw std::runtime_error("Unable to open " + output_file + " for writing.");
             }
 
             // Write the XML content
@@ -25,11 +25,11 @@ namespace ros2_cmv
 
             // Close the file
             ofs.close();
-            std::cout << "Generated " << output_file << std::endl;
+            RCLCPP_INFO_STREAM(logger, "Generated " << output_file);
         }
         catch (const std::exception &e)
         {
-            std::cerr << "Error: " << e.what() << std::endl;
+            RCLCPP_ERROR_STREAM(logger, "Error: " << e.what());
         }
     }
 
@@ -42,8 +42,8 @@ namespace ros2_cmv
             std::ifstream ifs(input_file);
             if (!ifs.is_open())
             {
-                std::cerr << "Error: Unable to open " << input_file << " for reading." << std::endl;
-                return;
+                RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << input_file << " for reading.");
+                throw std::runtime_error("Unable to open " + input_file + " for reading.");
             }
 
             std::ostringstream content_stream;
@@ -51,7 +51,7 @@ namespace ros2_cmv
             std::string content = content_stream.str();
             ifs.close();
 
-            // Replace the <name>...</name> tag
+            // 1. Replace the <name>...</name> tag
             size_t start_pos = content.find("<name>");
             size_t end_pos = content.find("</name>", start_pos);
             if (start_pos != std::string::npos && end_pos != std::string::npos)
@@ -61,16 +61,27 @@ namespace ros2_cmv
             }
             else
             {
-                std::cerr << "Error: <name> tag not found in " << input_file << std::endl;
-                return;
+                RCLCPP_ERROR_STREAM(logger, "Error: <name> tag not found in " << input_file);
+                throw std::runtime_error("Error: <name> tag not found in " + input_file);
             }
 
+            // 2. Replace the <depend>...</depend> tag
             size_t last_depend_end_pos = content.rfind("</depend>");
             if (last_depend_end_pos != std::string::npos)
             {
-                last_depend_end_pos += 9;
-                const std::string new_line = "\n  <depend>" + additional_package + "</depend>";
-                content.insert(last_depend_end_pos, new_line);
+                // Check if the dependency already exists
+                const std::string dependency_tag = "<depend>" + additional_package + "</depend>";
+                if (content.find(dependency_tag) == std::string::npos)
+                {
+                    // Dependency does not exist; insert it
+                    last_depend_end_pos += 9; // Move past the last "</depend>"
+                    const std::string new_line = "\n  " + dependency_tag;
+                    content.insert(last_depend_end_pos, new_line);
+                }
+                else
+                {
+                    RCLCPP_WARN_STREAM(logger, "Dependency '" << additional_package << "' already exists in the package.xml file.");
+                }
             }
             else
             {
@@ -81,18 +92,18 @@ namespace ros2_cmv
             std::ofstream ofs(output_file);
             if (!ofs.is_open())
             {
-                std::cerr << "Error: Unable to open " << output_file << " for writing." << std::endl;
+                RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << output_file << " for writing.");
                 return;
             }
 
             ofs << content;
             ofs.close();
 
-            std::cout << "Generated " << output_file << " with package name: " << new_name << std::endl;
+            RCLCPP_INFO_STREAM(logger, "Generated " << output_file << " with package name: " << new_name);
         }
         catch (const std::exception &e)
         {
-            std::cerr << "Error: " << e.what() << std::endl;
+            RCLCPP_ERROR_STREAM(logger, "Error: " << e.what());
         }
     }
 }

@@ -22,6 +22,7 @@
 #include <rviz_default_plugins/displays/wrench/wrench_display.hpp>
 
 #include "ros2_cmv/exposed_display_core.hpp"
+#include "ros2_cmv/common_values.hpp"
 
 namespace ros2_cmv
 {
@@ -43,8 +44,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto accelStamped = std::make_shared<geometry_msgs::msg::AccelStamped>();
-            accelStamped->header.frame_id = "map";
-            accelStamped->header.stamp = rclcpp::Clock().now();
+            accelStamped->header = globalValues.getHeader();
             accelStamped->accel = *(castMessage<geometry_msgs::msg::Accel::ConstSharedPtr>(param));
             geometry_msgs::msg::AccelStamped::ConstSharedPtr accelStampedConst = accelStamped;
             ExposedAccelStampedDisplay::processMessage(accelStampedConst);
@@ -160,8 +160,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto pointStamped = std::make_shared<geometry_msgs::msg::PointStamped>();
-            pointStamped->header.frame_id = "map";
-            pointStamped->header.stamp = rclcpp::Clock().now();
+            pointStamped->header = globalValues.getHeader();
             pointStamped->point = *(castMessage<geometry_msgs::msg::Point::ConstSharedPtr>(param));
             geometry_msgs::msg::PointStamped::ConstSharedPtr pointStampedConst = pointStamped;
             ExposedPointStampedDisplay::processMessage(pointStampedConst);
@@ -197,8 +196,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto polygonStamped = std::make_shared<geometry_msgs::msg::PolygonStamped>();
-            polygonStamped->header.frame_id = "map";
-            polygonStamped->header.stamp = rclcpp::Clock().now();
+            polygonStamped->header = globalValues.getHeader();
             polygonStamped->polygon = *(castMessage<geometry_msgs::msg::Polygon::ConstSharedPtr>(param));
             geometry_msgs::msg::PolygonStamped::ConstSharedPtr polygonStampedConst = polygonStamped;
             ExposedPolygonStampedDisplay::processMessage(polygonStampedConst);
@@ -224,8 +222,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto poseStamped = std::make_shared<geometry_msgs::msg::PoseStamped>();
-            poseStamped->header.frame_id = "map";
-            poseStamped->header.stamp = rclcpp::Clock().now();
+            poseStamped->header = globalValues.getHeader();
             poseStamped->pose = *(castMessage<geometry_msgs::msg::Pose::ConstSharedPtr>(param));
             geometry_msgs::msg::PoseStamped::ConstSharedPtr poseStampedConst = poseStamped;
             ExposedPoseStampedDisplay::processMessage(poseStampedConst);
@@ -261,8 +258,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto poseWithCovarianceStamped = std::make_shared<geometry_msgs::msg::PoseWithCovarianceStamped>();
-            poseWithCovarianceStamped->header.frame_id = "map";
-            poseWithCovarianceStamped->header.stamp = rclcpp::Clock().now();
+            poseWithCovarianceStamped->header = globalValues.getHeader();
             poseWithCovarianceStamped->pose = *(castMessage<geometry_msgs::msg::PoseWithCovariance::ConstSharedPtr>(param));
             geometry_msgs::msg::PoseWithCovarianceStamped::ConstSharedPtr poseWithCovarianceStampedConst = poseWithCovarianceStamped;
             ExposedPoseWithCovarianceStampedDisplay::processMessage(poseWithCovarianceStampedConst);
@@ -299,8 +295,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto twistStamped = std::make_shared<geometry_msgs::msg::TwistStamped>();
-            twistStamped->header.frame_id = "map";
-            twistStamped->header.stamp = rclcpp::Clock().now();
+            twistStamped->header = globalValues.getHeader();
             twistStamped->twist = *(castMessage<geometry_msgs::msg::Twist::ConstSharedPtr>(param));
             geometry_msgs::msg::TwistStamped::ConstSharedPtr twistStampedConst = twistStamped;
             ExposedTwistStampedDisplay::processMessage(twistStampedConst);
@@ -327,8 +322,7 @@ namespace ros2_cmv
         void processMessage(std::any param) override
         {
             auto wrenchStamped = std::make_shared<geometry_msgs::msg::WrenchStamped>();
-            wrenchStamped->header.frame_id = "map";
-            wrenchStamped->header.stamp = rclcpp::Clock().now();
+            wrenchStamped->header = globalValues.getHeader();
             wrenchStamped->wrench = *(castMessage<geometry_msgs::msg::Wrench::ConstSharedPtr>(param));
 
             geometry_msgs::msg::WrenchStamped::ConstSharedPtr wrenchStampedConst = wrenchStamped;
