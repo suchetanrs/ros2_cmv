@@ -4,7 +4,7 @@
   <version>0.1.0</version>
   <description>A package that has an example message for ros2_cmv package</description>
 
-  <maintainer email="rssuchetan@gmail.com">Suchetan R S</maintainer>
+  <maintainer email="rssuchetan@gmail.com">Suchetan Saravanan</maintainer>
   <license>MIT</license>
 
   <depend>rosidl_default_generators</depend>

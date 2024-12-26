@@ -4,7 +4,7 @@
   <name>ros2_cmv</name>
   <version>1.0.0</version>
   <description>A package to generate custom rviz plugins for custom messages.</description>
-  <maintainer email="rssuchetan@gmail.com">HuaTsai</maintainer>
+  <maintainer email="rssuchetan@gmail.com">Suchetan Saravanan</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

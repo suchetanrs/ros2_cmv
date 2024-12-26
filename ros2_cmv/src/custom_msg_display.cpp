@@ -35,11 +35,14 @@ namespace PROJECT_NAME
 
     void CustomMessageDisplay::onEnable()
     {
-        std::lock_guard<std::mutex> lock(displayMutex_);
-        for (const auto &[key, instance] : displayInstances_)
         {
-            instance->onEnable();
+            std::lock_guard<std::mutex> lock(displayMutex_);
+            for (const auto &[key, instance] : displayInstances_)
+            {
+                instance->onEnable();
+            }
         }
+        updateMemberVisibility();
     }
 
     void CustomMessageDisplay::onInitialize()
