@@ -9,6 +9,9 @@ namespace ros2_cmv
         QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
         // --- Section 0: Title and Legend ---
+        // Create a horizontal layout for the legend and image
+        QHBoxLayout *legendLayout = new QHBoxLayout();
+
         // Create a legend as a QLabel
         QLabel *legend = new QLabel(this);
         legend->setText(
@@ -17,8 +20,17 @@ namespace ros2_cmv
             "<span style='color:red;'><b>------</b></span> Non-visualizable message fields");
         legend->setAlignment(Qt::AlignLeft);
 
-        // Add the legend to the layout
-        mainLayout->addWidget(legend);
+        // Add the legend to the horizontal layout
+        legendLayout->addWidget(legend);
+
+        // Create an image label
+        QLabel *imageLabel = new QLabel(this);
+        QPixmap image(QString::fromStdString(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/ros2_cmv_logo.jpg"));
+        imageLabel->setPixmap(image.scaled(150, 150, Qt::KeepAspectRatio));
+        imageLabel->setAlignment(Qt::AlignRight);
+        legendLayout->addWidget(imageLabel);
+
+        mainLayout->addLayout(legendLayout);
 
         // --- Section 1: Content Display ---
         contentDisplay = new QTextEdit(this);
@@ -281,7 +293,7 @@ int main(int argc, char *argv[])
 
     auto mainWindow = new ros2_cmv::PluginGeneratorApp();
     mainWindow->setWindowTitle("RViz Plugin Generator");
-    mainWindow->resize(900, 700);
+    mainWindow->resize(900, 750);
     mainWindow->show();
 
     return app.exec();

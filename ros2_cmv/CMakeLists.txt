@@ -102,7 +102,7 @@ install(
 )
 
 install(
-  FILES base_files/base_cmakelists.txt base_files/base_package.xml src/custom_msg_display.cpp
+  FILES base_files/base_cmakelists.txt base_files/base_package.xml base_files/ros2_cmv_logo.jpg src/custom_msg_display.cpp
   DESTINATION share/${PROJECT_NAME}/base_files
 )
 

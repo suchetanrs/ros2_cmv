@@ -31,7 +31,7 @@ class CustomMessagePublisher(Node):
         super().__init__('custom_message_publisher')
 
         # Create publishers
-        self.custom_msg_publisher = self.create_publisher(Example, 'custom_point_topic', 10)
+        self.custom_msg_publisher = self.create_publisher(Example, 'example_msg_topic', 10)
 
         self.get_logger().info("CustomMessagePublisher node has been started.")
 
