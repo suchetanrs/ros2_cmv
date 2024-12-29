@@ -21,6 +21,7 @@ from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Range, CameraInf
 from visualization_msgs.msg import Marker, MarkerArray
 
 # Custom message
+# from ros2_cmv_cmake_example.msg import Example
 from ros2_cmv_example.msg import Example
 
 
@@ -397,7 +398,7 @@ class CustomMessagePublisher(Node):
         custom_msg.twist = twist_stamped
         custom_msg.twist_raw = twist
         custom_msg.wrench = wrench_stamped_msg
-        custom_msg.wrench_raw = wrench_raw
+        # custom_msg.wrench_raw = wrench_raw
 
         # --------------------------
         # Logging (for debugging)

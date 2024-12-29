@@ -11,7 +11,7 @@ namespace ros2_cmv
     {
         if (!param.has_value())
         {
-            throw std::runtime_error("No parameter provided");
+            throw std::runtime_error("No parameter provided for castMessage");
         }
         // Try to extract MessageType
         try
@@ -21,7 +21,7 @@ namespace ros2_cmv
         }
         catch (const std::bad_any_cast &)
         {
-            throw std::runtime_error("Invalid parameter type for this class");
+            throw std::runtime_error("Invalid parameter type for this class: " + std::string(typeid(MessageType).name()));
         }
     }
 
@@ -64,19 +64,8 @@ namespace ros2_cmv
 
         void processMessage(std::any param) override
         {
-            if (!param.has_value())
-            {
-                throw std::runtime_error("No parameter provided");
-            }
-            try
-            {
-                const MessageType &actualParam = std::any_cast<const MessageType &>(param);
-                BaseDisplay::processMessage(actualParam);
-            }
-            catch (const std::bad_any_cast &)
-            {
-                throw std::runtime_error("Invalid parameter type for this class");
-            }
+            auto actualParam = castMessage<MessageType>(param);
+            BaseDisplay::processMessage(actualParam);
         }
     };
 

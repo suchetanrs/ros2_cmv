@@ -1,11 +1,8 @@
 #ifndef PACKAGE_XML_GENERATOR_HPP_
 #define PACKAGE_XML_GENERATOR_HPP_
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <filesystem>
-#include "ros2_cmv/common_values.hpp"
+#include "ros2_cmv/cmv_common.hpp"
+#include "ros2_cmv/cmv_macros.hpp"
 
 namespace ros2_cmv
 {

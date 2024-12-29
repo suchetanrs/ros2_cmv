@@ -1,5 +1,5 @@
-#ifndef EXPOSED_POINT_STAMPED_DISPLAY_HPP_
-#define EXPOSED_POINT_STAMPED_DISPLAY_HPP_
+#ifndef EXPOSED_DISPLAYS_HPP_
+#define EXPOSED_DISPLAYS_HPP_
 
 #include <rviz_default_plugins/displays/accel/accel_display.hpp>
 #include <rviz_default_plugins/displays/camera_info/camera_info_display.hpp>
@@ -22,7 +22,7 @@
 #include <rviz_default_plugins/displays/wrench/wrench_display.hpp>
 
 #include "ros2_cmv/exposed_display_core.hpp"
-#include "ros2_cmv/common_values.hpp"
+#include "ros2_cmv/cmv_common.hpp" // for the header value
 
 namespace ros2_cmv
 {
@@ -332,4 +332,4 @@ namespace ros2_cmv
     REGISTER_DISPLAY_CLASS("geometry_msgs/Wrench", ExposedWrenchDisplay)
 };
 
-#endif // EXPOSED_POINT_STAMPED_DISPLAY_HPP_
+#endif // EXPOSED_DISPLAYS_HPP_

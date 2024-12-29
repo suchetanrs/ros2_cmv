@@ -91,6 +91,7 @@
         "*.ipp": "cpp",
         "qpushbutton": "cpp",
         "filesystem": "cpp",
-        "qformlayout": "cpp"
+        "qformlayout": "cpp",
+        "qwidget": "cpp"
     }
 }

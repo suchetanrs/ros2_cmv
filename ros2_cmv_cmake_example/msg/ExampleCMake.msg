@@ -1,4 +1,4 @@
-# std_msgs/Header header
+std_msgs/Header header
 geometry_msgs/AccelStamped accel
 geometry_msgs/Accel accel_raw
 sensor_msgs/CameraInfo camera_info

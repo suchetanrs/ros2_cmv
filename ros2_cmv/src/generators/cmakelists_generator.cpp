@@ -9,7 +9,7 @@ namespace ros2_cmv
         std::ifstream ifs(input_file);
         if (!ifs.is_open())
         {
-            RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << input_file << " for reading.");
+            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << input_file << " for reading.");
             throw std::runtime_error("Unable to open " + input_file + " for reading.");
         }
 
@@ -43,13 +43,13 @@ namespace ros2_cmv
                 if (insert_pos != std::string::npos)
                 {
                     content.insert(insert_pos + 1, find_package_entry + "\n");
-                    RCLCPP_INFO_STREAM(logger, "Added find_package entry for '" << additional_package << "'.");
+                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Added find_package entry for '" << additional_package << "'.");
                 }
                 else
                 {
                     // If no newline found after last find_package, append at the end
                     content += "\n" + find_package_entry + "\n";
-                    RCLCPP_INFO_STREAM(logger, "Appended find_package entry for '" << additional_package << "' at the end.");
+                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Appended find_package entry for '" << additional_package << "' at the end.");
                 }
             }
             else
@@ -59,7 +59,7 @@ namespace ros2_cmv
         }
         else
         {
-            RCLCPP_WARN_STREAM(logger, "find_package for '" << additional_package << "' already exists.");
+            RCLCPP_WARN_STREAM(globalValues.getLogger(), "find_package for '" << additional_package << "' already exists.");
         }
 
         // 3. Add the additional package to the dependencies set
@@ -76,16 +76,16 @@ namespace ros2_cmv
                 {
                     // Insert the additional package before the closing parenthesis
                     content.insert(close_paren, additional_package);
-                    RCLCPP_INFO_STREAM(logger, "Added '" << additional_package << "' to dependencies.");
+                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Added '" << additional_package << "' to dependencies.");
                 }
                 else
                 {
-                    RCLCPP_WARN_STREAM(logger, "Dependency '" << additional_package << "' already exists.");
+                    RCLCPP_WARN_STREAM(globalValues.getLogger(), "Dependency '" << additional_package << "' already exists.");
                 }
             }
             else
             {
-                RCLCPP_ERROR_STREAM(logger, "Warning: Malformed dependencies set. Unable to add dependency.");
+                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Warning: Malformed dependencies set. Unable to add dependency.");
                 throw std::runtime_error("Malformed dependencies set in the base CMakeLists.txt.");
             }
         }
@@ -98,13 +98,13 @@ namespace ros2_cmv
         std::ofstream ofs(output_file);
         if (!ofs.is_open())
         {
-            RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << output_file << " for writing.");
+            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
             throw std::runtime_error("Unable to open " + output_file + " for writing.");
         }
 
         ofs << content;
         ofs.close();
 
-        RCLCPP_INFO_STREAM(logger, "Generated " << output_file << " with project name: " << project_name);
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file << " with project name: " << project_name);
     }
 }

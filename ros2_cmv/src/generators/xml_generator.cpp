@@ -5,19 +5,21 @@ namespace ros2_cmv
     void generatePluginXML(const std::string &libpath, const std::string &pluginName, const std::string &output_file,
                            const std::string &project_name)
     {
+        (void)libpath;
         try
         {
             // Open the output file
             std::ofstream ofs(output_file);
             if (!ofs.is_open())
             {
-                RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << output_file << " for writing.");
+                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
                 throw std::runtime_error("Unable to open " + output_file + " for writing.");
             }
 
             // Write the XML content
             ofs << "<?xml version=\"1.0\"?>\n";
-            ofs << "<library path=\"" << libpath << "\">\n";
+            ofs << "<library path=\"" << project_name << "_" << STRINGIFY(MESSAGE_NAME) << "_rviz_plugin\">\n";
+            // ofs << "<library path=\"" << libpath << "\">\n";
             ofs << "  <class name=\"" << pluginName << "\" type=\"" << project_name << "::" << "CustomMessageDisplay" << "\" base_class_type=\"rviz_common::Display\">\n";
             ofs << "    <description>Custom message display for RViz</description>\n";
             ofs << "  </class>\n";
@@ -25,11 +27,12 @@ namespace ros2_cmv
 
             // Close the file
             ofs.close();
-            RCLCPP_INFO_STREAM(logger, "Generated " << output_file);
+            RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file);
         }
         catch (const std::exception &e)
         {
-            RCLCPP_ERROR_STREAM(logger, "Error: " << e.what());
+            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: " << e.what());
+            throw std::runtime_error("Error generating " + output_file + ": " + e.what());
         }
     }
 
@@ -42,7 +45,7 @@ namespace ros2_cmv
             std::ifstream ifs(input_file);
             if (!ifs.is_open())
             {
-                RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << input_file << " for reading.");
+                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << input_file << " for reading.");
                 throw std::runtime_error("Unable to open " + input_file + " for reading.");
             }
 
@@ -61,7 +64,7 @@ namespace ros2_cmv
             }
             else
             {
-                RCLCPP_ERROR_STREAM(logger, "Error: <name> tag not found in " << input_file);
+                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: <name> tag not found in " << input_file);
                 throw std::runtime_error("Error: <name> tag not found in " + input_file);
             }
 
@@ -80,7 +83,7 @@ namespace ros2_cmv
                 }
                 else
                 {
-                    RCLCPP_WARN_STREAM(logger, "Dependency '" << additional_package << "' already exists in the package.xml file.");
+                    RCLCPP_WARN_STREAM(globalValues.getLogger(), "Dependency '" << additional_package << "' already exists in the package.xml file.");
                 }
             }
             else
@@ -92,18 +95,19 @@ namespace ros2_cmv
             std::ofstream ofs(output_file);
             if (!ofs.is_open())
             {
-                RCLCPP_ERROR_STREAM(logger, "Error: Unable to open " << output_file << " for writing.");
+                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
                 return;
             }
 
             ofs << content;
             ofs.close();
 
-            RCLCPP_INFO_STREAM(logger, "Generated " << output_file << " with package name: " << new_name);
+            RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file << " with package name: " << new_name);
         }
         catch (const std::exception &e)
         {
-            RCLCPP_ERROR_STREAM(logger, "Error: " << e.what());
+            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: " << e.what());
+            throw std::runtime_error("Error generating " + output_file + ": " + e.what());
         }
     }
 }

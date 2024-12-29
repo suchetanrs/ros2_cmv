@@ -1,4 +1,4 @@
-#include "ros2_cmv/pluginGeneratorApp.hpp"
+#include "ros2_cmv/plugin_generator_app.hpp"
 
 namespace ros2_cmv
 {
@@ -8,7 +8,7 @@ namespace ros2_cmv
         // Main vertical layout
         QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-        // --- Section 0: Title and Legend ---
+        // ======================================= Section 0: Title and Legend =======================================
         // Create a horizontal layout for the legend and image
         QHBoxLayout *legendLayout = new QHBoxLayout();
 
@@ -29,15 +29,15 @@ namespace ros2_cmv
         imageLabel->setPixmap(image.scaled(150, 150, Qt::KeepAspectRatio));
         imageLabel->setAlignment(Qt::AlignRight);
         legendLayout->addWidget(imageLabel);
-
         mainLayout->addLayout(legendLayout);
 
-        // --- Section 1: Content Display ---
+
+        // ======================================= Section 1: Content Display =======================================
         contentDisplay = new QTextEdit(this);
         contentDisplay->setReadOnly(true);
         mainLayout->addWidget(contentDisplay);
 
-        // --- Section 2: Interface Dropdown ---
+        // ======================================= Section 2: Interface Dropdown =======================================
         QHBoxLayout *dropdownLayout = new QHBoxLayout();
 
         QLabel *dropdownLabel = new QLabel("Select Interface:", this);
@@ -51,25 +51,17 @@ namespace ros2_cmv
         // Populate the dropdown with interfaces
         populateInterfaceDropdown();
 
-        // --- Section 3: Input Fields ---
+        // ======================================= Section 3: Input fields =======================================
         QFormLayout *formLayout = new QFormLayout();
 
         // Initialize input fields with labels
         customPluginPath = new QLineEdit(this);
-        // input2 = new QLineEdit(this);
-        // input3 = new QLineEdit(this);
-        // input4 = new QLineEdit(this);
-        // input5 = new QLineEdit(this);
 
         formLayout->addRow(new QLabel("Plugin output path:"), customPluginPath);
-        // formLayout->addRow(new QLabel("Input 2:"), input2);
-        // formLayout->addRow(new QLabel("Input 3:"), input3);
-        // formLayout->addRow(new QLabel("Input 4:"), input4);
-        // formLayout->addRow(new QLabel("Input 5:"), input5);
 
         mainLayout->addLayout(formLayout);
 
-        // --- Section 4: Buttons ---
+        // ======================================= Section 4: Buttons =======================================
         QHBoxLayout *buttonLayout = new QHBoxLayout();
 
         // Process button (75% width)
@@ -87,8 +79,7 @@ namespace ros2_cmv
         connect(processButton, &QPushButton::clicked, this, &PluginGeneratorApp::processInput);
         connect(saveButton, &QPushButton::clicked, this, &PluginGeneratorApp::saveSettings);
 
-        // Connect to QApplication's aboutToQuit signal
-        connect(QApplication::instance(), &QApplication::aboutToQuit, this, &PluginGeneratorApp::saveSettings);
+        // ======================================= Load previous settings =======================================
         QSettings settings("ROS2_CMV", "PluginGeneratorApp");
 
         // Restore plugin path
@@ -110,21 +101,20 @@ namespace ros2_cmv
 
     PluginGeneratorApp::~PluginGeneratorApp()
     {
-        RCLCPP_INFO_STREAM(logger, "Closed cleanly.");
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Closed cleanly.");
     }
 
     void PluginGeneratorApp::saveSettings()
     {
-        RCLCPP_INFO_STREAM(logger, "Saving settings");
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Saving settings");
         QSettings settings("ROS2_CMV", "PluginGeneratorApp");
         settings.setValue("customPluginPath", customPluginPath->text());
         settings.setValue("selectedInterface", interfaceComboBox->currentText());
     }
 
-    // Function to populate the dropdown with interface names
     void PluginGeneratorApp::populateInterfaceDropdown()
     {
-        std::vector<Interface> interfaces = listInterfaces();
+        std::vector<Interface> interfaces = getMsgInterfaces();
 
         // Clear existing items
         interfaceComboBox->clear();
@@ -144,23 +134,20 @@ namespace ros2_cmv
         }
 
         connect(interfaceComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                this, &PluginGeneratorApp::printSelectedInterface);
+                this, &PluginGeneratorApp::inspectSelectedInterface);
     }
 
-    void PluginGeneratorApp::printSelectedInterface()
+    void PluginGeneratorApp::inspectSelectedInterface()
     {
         QString selectedText = interfaceComboBox->currentText();
         std::string selectedTextString = selectedText.toStdString();
         auto slashPose = selectedTextString.find('/');
         std::string package_name = selectedTextString.substr(0, slashPose);
         std::string message_name = selectedTextString.substr(slashPose + 1);
-        msgFilePath = getMsgPath(package_name, message_name);
-        // RCLCPP_INFO_STREAM(logger, "Selected Interface: " << selectedText.toStdString());
-        // RCLCPP_INFO_STREAM(logger, "Path: " << filePath);
+        auto msgFilePath = getMsgPath(package_name, message_name);
         loadMsgFile(msgFilePath);
     }
 
-    // Slot to load and display a .msg file
     void PluginGeneratorApp::loadMsgFile(std::string &filePathStr)
     {
         auto filePath = QString::fromStdString(filePathStr);
@@ -178,8 +165,8 @@ namespace ros2_cmv
         // Split the file content into lines
         QStringList lines = fileContent.split('\n');
 
-        validIdx.clear();
-        if (!check_message_validity(filePathStr, validIdx))
+        std::vector<int> validIdx;
+        if (!checkMessageValidity(filePathStr, validIdx))
         {
             QMessageBox::critical(this, "Error", QString("Message has either 0 valid lines or does not have header."));
         }
@@ -214,75 +201,35 @@ namespace ros2_cmv
     // Slot to process input data
     void PluginGeneratorApp::processInput()
     {
+        // 1. Get the package name.
         auto selectedText = interfaceComboBox->currentText().toStdString();
-        std::string packageName = convertToRvizPluginName(selectedText);
 
-        QString outputPath = customPluginPath->text();
-        auto outputStrPath = outputPath.toStdString();
-        if (outputPath.isEmpty())
+        // 2. Get the package name.
+        std::string rvizPluginName = convertToRvizPluginName(selectedText);
+
+        // 3. Get the core package path (outputCorePath)
+        QString outputWsPath = customPluginPath->text();
+        auto outputWsPathStr = outputWsPath.toStdString();
+        if (outputWsPath.isEmpty())
         {
             QMessageBox::warning(this, "Warning", "Output path is empty. Please provide a valid path.");
             return;
         }
-        if (outputStrPath.back() == '/')
+        if (outputWsPathStr.back() == '/')
         {
-            outputStrPath.pop_back();
+            outputWsPathStr.pop_back();
         }
-        RCLCPP_INFO_STREAM(logger, "Selected output path: " << outputStrPath);
-        auto outputCorePath = outputStrPath + "/src/" + packageName;
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Selected output path: " << outputWsPathStr);
+        auto outputCorePath = outputWsPathStr + "/src/" + rvizPluginName;
 
-        std::vector<std::string> directories = {
-            outputCorePath + "/src/",
-            outputCorePath + "/include/" + packageName + "/"};
+        // 4. Get the message file path (msgFilePath)
+        auto slashPose = selectedText.find('/');
+        std::string package_name = selectedText.substr(0, slashPose);
+        std::string message_name = selectedText.substr(slashPose + 1);
+        auto msgFilePath = getMsgPath(package_name, message_name);
 
-        // Iterate through each directory and create it if it doesn't exist
-        for (const auto &directory : directories)
-        {
-            try
-            {
-                if (std::filesystem::create_directories(directory))
-                {
-                    RCLCPP_INFO_STREAM(logger, "Directory created: " << directory);
-                }
-                else
-                {
-                    RCLCPP_INFO_STREAM(logger, "Directory already exists: " << directory);
-                }
-            }
-            catch (const std::filesystem::filesystem_error &e)
-            {
-                QMessageBox::critical(this, "Error", QString("Failed to create directory: %1").arg(directory.c_str()));
-            }
-        }
-
-        RCLCPP_INFO_STREAM(logger, "===================================================================");
-        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/custom_msg_display.hpp", outputCorePath + "/include/" + packageName + "/custom_msg_display.hpp");
-        RCLCPP_INFO_STREAM(logger, "===================================================================");
-        generate_cpp_header(msgFilePath, outputCorePath + "/include/" + packageName + "/custom_msg_metadata.hpp", convertToIncludePath(selectedText), convertToNamespace(selectedText), validIdx);
-        RCLCPP_INFO_STREAM(logger, "===================================================================");
-        copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/custom_msg_display.cpp", outputCorePath + "/src/custom_msg_display.cpp");
-        RCLCPP_INFO_STREAM(logger, "===================================================================");
-        generatePluginXML(packageName, packageName, outputCorePath + "/plugin.xml", packageName);
-        RCLCPP_INFO_STREAM(logger, "===================================================================");
-        generateCMakeLists(packageName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_cmakelists.txt", outputCorePath + "/CMakeLists.txt", convertToPackageName(selectedText));
-        RCLCPP_INFO_STREAM(logger, "===================================================================");
-        generatePackageXML(packageName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_package.xml", outputCorePath + "/package.xml", convertToPackageName(selectedText));
-
-        // QString value2 = input2->text();
-        // QString value3 = input3->text();
-        // QString value4 = input4->text();
-        // QString value5 = input5->text();
-
-        // // Example processing: Display the input values in a message box
-        // QString message = QString("Selected Interface: %1\nInput 1: %2\nInput 2: %3\nInput 3: %4\nInput 4: %5\nInput 5: %6")
-        //                   .arg(selectedInterface)
-        //                   .arg(value1)
-        //                   .arg(value2)
-        //                   .arg(value3)
-        //                   .arg(value4)
-        //                   .arg(value5);
-
-        // QMessageBox::information(this, "Input Values", message);
+        // 5. Generate the files
+        generateFiles(msgFilePath, outputCorePath, selectedText, rvizPluginName, true);
     }
 };
 
@@ -299,4 +246,4 @@ int main(int argc, char *argv[])
     return app.exec();
 }
 
-#include "pluginGeneratorApp.moc"
+#include "plugin_generator_app.moc"
