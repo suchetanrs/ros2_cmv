@@ -5,7 +5,7 @@
 #include "ros2_cmv/cmv_macros.hpp"
 #include INCLUDE_PROJECT_HEADER(custom_msg_display.hpp)
 
-namespace PROJECT_NAME
+namespace MESSAGE_NAME
 {
     CustomMessageDisplay::CustomMessageDisplay()
     {
@@ -95,7 +95,7 @@ namespace PROJECT_NAME
         }
     }
 
-} // namespace PROJECT_NAME
+} // namespace MESSAGE_NAME
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(PROJECT_NAME::CustomMessageDisplay, rviz_common::Display)
+PLUGINLIB_EXPORT_CLASS(MESSAGE_NAME::CustomMessageDisplay, rviz_common::Display)

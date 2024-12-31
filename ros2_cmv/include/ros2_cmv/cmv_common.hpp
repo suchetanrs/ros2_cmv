@@ -78,6 +78,9 @@ namespace ros2_cmv
     // ros2_cmv_example/Example -> ros2_cmv_example::msg::Example
     std::string convertRosTypeToCpp(const std::string &ros_type);
 
+    // ros2_cm_example/Example -> Example
+    std::string convertToMessageName(const std::string &ros_type);
+
     // Function to convert camel case to snake case
     // Example -> example
     // Conversion logic ported to CPP from rosidl

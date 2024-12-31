@@ -1,34 +1,18 @@
-#
-# A simple macro that executes the installed plugin_generator_cmake.
-#
+function(GetFileNameWithoutExtension path output_var)
+    get_filename_component(file_name ${path} NAME)
+
+    get_filename_component(extension ${file_name} EXT)
+    if(NOT ${extension} STREQUAL ".msg")
+        message(FATAL_ERROR "Error: The file '${file_name}' does not have a '.msg' extension.")
+    endif()
+
+    get_filename_component(base_name ${file_name} NAME_WE)
+
+    set(${output_var} ${base_name} PARENT_SCOPE)
+endfunction()
+
 macro(generate_rviz_plugin)
-    # ######################################### GENERATE FILES #########################################
-    set(_plugin_generator_cmake_path "${ros2_cmv_DIR}/../../../lib/ros2_cmv/plugin_generator_cmake")
-    
-    message(STATUS "Current list dir: ${CMAKE_CURRENT_LIST_DIR}")
-    message(STATUS "Cmake install prefix: ${CMAKE_INSTALL_PREFIX}")
-    message(STATUS "ROS 2 CMV plugin_generator dir: ${ros2_cmv_DIR}/../../../lib/ros2_cmv/plugin_generator_cmake")
-
-    # set(_plugin_generator_cmake_path "$<TARGET_FILE:plugin_generator_cmake>")
-    message(STATUS "Found plugin_generator_cmake at ${_plugin_generator_cmake_path}")
-    
-    if(NOT _plugin_generator_cmake_path)
-        message(FATAL_ERROR "Could not find plugin_generator_cmake target!")
-    endif()
-
-    message(STATUS "Running plugin_generator_cmake from ros2_cmv...")
-
-    execute_process(
-        COMMAND "${_plugin_generator_cmake_path}" ${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${ARGV}
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-        RESULT_VARIABLE _ret
-    )
-
-    if(_ret)
-        message(FATAL_ERROR "plugin_generator_cmake failed with return code ${_ret}")
-    endif()
-
-    ############################################## BUILD FILES ###########################################
+    # ################################################ COMMON #######################################
     find_package(ament_cmake REQUIRED)
     find_package(ament_cmake_ros REQUIRED)
     find_package(pluginlib REQUIRED)
@@ -54,66 +38,84 @@ macro(generate_rviz_plugin)
         rosidl_typesupport_interface
     )
 
-    set(CMAKE_AUTOMOC ON)
-    qt5_wrap_cpp(MOC_FILES
-    include/${PROJECT_NAME}/custom_msg_display.hpp
-    )
+    set(_plugin_generator_cmake_path "${ros2_cmv_DIR}/../../../lib/ros2_cmv/plugin_generator_cmake")
+    
+    message(STATUS "Current list dir: ${CMAKE_CURRENT_LIST_DIR}")
+    message(STATUS "Cmake install prefix: ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "ROS 2 CMV plugin_generator dir: ${ros2_cmv_DIR}/../../../lib/ros2_cmv/plugin_generator_cmake")
+
+    # set(_plugin_generator_cmake_path "$<TARGET_FILE:plugin_generator_cmake>")
+    message(STATUS "Found plugin_generator_cmake at ${_plugin_generator_cmake_path}")
+    
+    if(NOT _plugin_generator_cmake_path)
+        message(FATAL_ERROR "Could not find plugin_generator_cmake target!")
+    endif()
 
     include_directories(${rviz_default_plugins_INCLUDE_DIRS})
-
-    # message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    # message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    # message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    # message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    # message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    # foreach(_non_idl_file ${_non_idl_files})
-    #     message("Non IDL file: ${_non_idl_file}")
-    # endforeach()
-    # foreach(_idl_file ${_idl_files})
-    #     message("IDL file: ${_idl_file}")
-    # endforeach()
-    # foreach(_dep_file ${_dep_files})
-    #     message("Dep file: ${_dep_file}")
-    # endforeach()
-    # foreach(mocfile ${MOC_FILES})
-    #     message("MOC file: ${mocfile}")
-    # endforeach()
-    # foreach(header ${_generated_headers})
-    #     message("Header: ${header}")
-    # endforeach()
     
 
-    add_library(${PROJECT_NAME}_rviz_plugin
-    src/custom_msg_display.cpp
-    src/custom_msg_process.cpp
-    ${MOC_FILES}
-    ${_generated_headers}
-    )
+    foreach(_message_file ${ARGV})
+        # ######################################### GENERATE FILES #########################################
 
-    target_include_directories(${PROJECT_NAME}_rviz_plugin
-    PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/rosidl_generator_cpp>
-    $<INSTALL_INTERFACE:include>
-    )
+        message(STATUS "Running plugin_generator_cmake from ros2_cmv...")
+        GetFileNameWithoutExtension(${_message_file} _message_name)
 
-    ament_target_dependencies(${PROJECT_NAME}_rviz_plugin
-    ${dependencies}
-    )
+        execute_process(
+            COMMAND "${_plugin_generator_cmake_path}" ${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${_message_file}
+            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+            RESULT_VARIABLE _ret
+        )
 
-    target_link_libraries(${PROJECT_NAME}_rviz_plugin 
-    rviz_default_plugins::rviz_default_plugins 
-    ${PROJECT_NAME}__rosidl_typesupport_cpp
-    )
-    target_compile_definitions(${PROJECT_NAME}_rviz_plugin PRIVATE PROJECT_NAME=${PROJECT_NAME})
+        if(_ret)
+            message(FATAL_ERROR "plugin_generator_cmake failed with return code ${_ret}")
+        endif()
 
-    install(
-    TARGETS ${PROJECT_NAME}_rviz_plugin
-    EXPORT export_${PROJECT_NAME}_rviz_plugin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-    )
+        ############################################## BUILD FILES ###########################################
+        qt5_wrap_cpp(MOC_FILES_${_message_name}
+            include/${PROJECT_NAME}/message_specific/${_message_name}/custom_msg_display.hpp
+        )
+
+        foreach(moc_file ${MOC_FILES_${_message_name}})
+            message(STATUS "MOC file ${_message_name}: ${moc_file}")
+        endforeach()
+        
+
+        add_library(${PROJECT_NAME}_${_message_name}_rviz_plugin
+            src/message_specific/${_message_name}/custom_msg_process.cpp
+            src/message_specific/${_message_name}/custom_msg_display.cpp
+            ${_generated_headers}
+            ${MOC_FILES_${_message_name}}
+        )
+
+        target_include_directories(${PROJECT_NAME}_${_message_name}_rviz_plugin
+            PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/rosidl_generator_cpp>
+            $<INSTALL_INTERFACE:include>
+        )
+
+        ament_target_dependencies(${PROJECT_NAME}_${_message_name}_rviz_plugin
+            ${dependencies}
+        )
+
+        target_link_libraries(${PROJECT_NAME}_${_message_name}_rviz_plugin 
+            rviz_default_plugins::rviz_default_plugins 
+            ${PROJECT_NAME}__rosidl_typesupport_cpp
+        )
+        target_compile_definitions(${PROJECT_NAME}_${_message_name}_rviz_plugin PRIVATE PROJECT_NAME=${PROJECT_NAME})
+        target_compile_definitions(${PROJECT_NAME}_${_message_name}_rviz_plugin PRIVATE MESSAGE_NAME=${_message_name})
+
+        install(
+        TARGETS ${PROJECT_NAME}_${_message_name}_rviz_plugin
+        EXPORT export_${PROJECT_NAME}_${_message_name}_rviz_plugin
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+        )
+
+        ament_export_targets(export_${PROJECT_NAME}_${_message_name}_rviz_plugin)
+        pluginlib_export_plugin_description_file(rviz_common plugin_${_message_name}.xml)
+    endforeach()
 
     install(
     DIRECTORY include/
@@ -121,7 +123,5 @@ macro(generate_rviz_plugin)
     )
 
     ament_export_include_directories(include)
-    ament_export_targets(export_${PROJECT_NAME}_rviz_plugin)
-    pluginlib_export_plugin_description_file(rviz_common plugin.xml)
 
 endmacro()

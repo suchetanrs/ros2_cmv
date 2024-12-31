@@ -59,9 +59,10 @@ namespace ros2_cmv
                        std::string &selectedMessage, std::string &projectName,
                        bool newPackage)
     {
+
         std::vector<std::string> directories = {
-            outputPackageDir + "/src/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/",
-            outputPackageDir + "/include/" + projectName + "/message_specific/" +  + STRINGIFY(MESSAGE_NAME) + "/"};
+            outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/",
+            outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/"};
 
         // Iterate through each directory and create it if it doesn't exist
         for (const auto &directory : directories)
@@ -97,21 +98,21 @@ namespace ros2_cmv
             // throw std::runtime_error("No valid messages found in the .msg file.");
         }
 
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "===================================================================");
-        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_display.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_display.hpp");
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "===================================================================");
-        generateMetadataHeader(messages, outputPackageDir + "/include/" + projectName + "/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_metadata.hpp", convertToIncludePath(selectedMessage), convertRosTypeToCpp(selectedMessage));
-        generateProcessMsgFile(messages, outputPackageDir + "/src/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_process.cpp");
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "===================================================================");
-        copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_display.cpp", outputPackageDir + "/src/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_display.cpp");
-        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_process.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + STRINGIFY(MESSAGE_NAME) + "/custom_msg_process.hpp");
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "===================================================================");
-        generatePluginXML(projectName, projectName, outputPackageDir + "/plugin.xml", projectName);
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "DISPLAY HEADER FILE===================================================================");
+        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/Example/custom_msg_display.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.hpp");
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "OTHER HEADER FILES===================================================================");
+        generateMetadataHeader(messages, outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_metadata.hpp", convertToIncludePath(selectedMessage), convertRosTypeToCpp(selectedMessage));
+        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/Example/custom_msg_process.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.hpp");
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "CPP FILES===================================================================");
+        copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/message_specific/Example/custom_msg_display.cpp", outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.cpp");
+        generateProcessMsgFile(messages, outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.cpp");
+        RCLCPP_INFO_STREAM(globalValues.getLogger(), "PLUGIN XML===================================================================");
+        generatePluginXML(convertToMessageName(selectedMessage), convertToMessageName(selectedMessage), outputPackageDir + "/plugin_" + convertToMessageName(selectedMessage) + ".xml", projectName);
         if (newPackage)
         {
-            RCLCPP_INFO_STREAM(globalValues.getLogger(), "===================================================================");
-            generateCMakeLists(projectName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_cmakelists.txt", outputPackageDir + "/CMakeLists.txt", convertToPackageName(selectedMessage));
-            RCLCPP_INFO_STREAM(globalValues.getLogger(), "===================================================================");
+            RCLCPP_INFO_STREAM(globalValues.getLogger(), "CMAKELISTS TXT===================================================================");
+            generateCMakeLists(projectName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_cmakelists.txt", outputPackageDir + "/CMakeLists.txt", convertToPackageName(selectedMessage), convertToMessageName(selectedMessage));
+            RCLCPP_INFO_STREAM(globalValues.getLogger(), "PACKAGE XML===================================================================");
             generatePackageXML(projectName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_package.xml", outputPackageDir + "/package.xml", convertToPackageName(selectedMessage));
         }
     }

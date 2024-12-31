@@ -38,6 +38,18 @@ namespace ros2_cmv
         return package + "::msg::" + message;
     }
 
+    std::string convertToMessageName(const std::string &ros_type)
+    {
+        size_t slash_pos = ros_type.find('/');
+        if (slash_pos == std::string::npos)
+        {
+            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Invalid ROS type format: " << ros_type);
+            throw std::runtime_error("Invalid ROS type format: " + ros_type);
+        }
+        std::string message = ros_type.substr(slash_pos + 1);
+        return message;
+    }
+
     std::string convertCamelCaseToSnakeCase(const std::string &input)
     {
         std::string result = input;

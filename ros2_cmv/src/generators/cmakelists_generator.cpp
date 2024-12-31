@@ -3,7 +3,8 @@
 namespace ros2_cmv
 {
     void generateCMakeLists(const std::string &project_name, const std::string &input_file,
-                            const std::string &output_file, std::string additional_package)
+                            const std::string &output_file, std::string additional_package,
+                            const std::string &messageName)
     {
         // Read the content of the input file
         std::ifstream ifs(input_file);
@@ -92,6 +93,29 @@ namespace ros2_cmv
         else
         {
             throw std::runtime_error("Could not find dependencies set in the base CMakeLists.txt.");
+        }
+
+        // 4. Replace MESSAGE_NAME
+        std::string message_name_key = "set(MESSAGE_NAME \"";
+        size_t msg_name_pos = content.find(message_name_key);
+        if (msg_name_pos != std::string::npos)
+        {
+            size_t start = msg_name_pos + message_name_key.length();
+            size_t end = content.find("\"", start);
+            if (end != std::string::npos)
+            {
+                content.replace(start, end - start, messageName);
+                RCLCPP_INFO_STREAM(globalValues.getLogger(), "Replaced MESSAGE_NAME with '" << messageName << "'.");
+            }
+            else
+            {
+                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Malformed MESSAGE_NAME entry in the CMakeLists.txt.");
+                throw std::runtime_error("Malformed MESSAGE_NAME entry in the base CMakeLists.txt.");
+            }
+        }
+        else
+        {
+            RCLCPP_WARN_STREAM(globalValues.getLogger(), "No MESSAGE_NAME entry found to replace.");
         }
 
         // Write the modified content to the output file

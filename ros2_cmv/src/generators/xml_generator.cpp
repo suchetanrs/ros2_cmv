@@ -2,10 +2,9 @@
 
 namespace ros2_cmv
 {
-    void generatePluginXML(const std::string &libpath, const std::string &pluginName, const std::string &output_file,
+    void generatePluginXML(const std::string &messageName, const std::string &pluginName, const std::string &output_file,
                            const std::string &project_name)
     {
-        (void)libpath;
         try
         {
             // Open the output file
@@ -18,9 +17,9 @@ namespace ros2_cmv
 
             // Write the XML content
             ofs << "<?xml version=\"1.0\"?>\n";
-            ofs << "<library path=\"" << project_name << "_" << STRINGIFY(MESSAGE_NAME) << "_rviz_plugin\">\n";
+            ofs << "<library path=\"" << project_name << "_" << messageName << "_rviz_plugin\">\n";
             // ofs << "<library path=\"" << libpath << "\">\n";
-            ofs << "  <class name=\"" << pluginName << "\" type=\"" << project_name << "::" << "CustomMessageDisplay" << "\" base_class_type=\"rviz_common::Display\">\n";
+            ofs << "  <class name=\"" << pluginName << "\" type=\"" << messageName << "::" << "CustomMessageDisplay" << "\" base_class_type=\"rviz_common::Display\">\n";
             ofs << "    <description>Custom message display for RViz</description>\n";
             ofs << "  </class>\n";
             ofs << "</library>\n";

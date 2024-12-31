@@ -11,7 +11,8 @@ namespace ros2_cmv
     // output_file: The output file to write to
     // additional_package: The additional package to add to the CMakeLists.txt
     void generateCMakeLists(const std::string &project_name, const std::string &input_file,
-                            const std::string &output_file, std::string additional_package);
+                            const std::string &output_file, std::string additional_package,
+                            const std::string &messageName);
 };
 
 #endif

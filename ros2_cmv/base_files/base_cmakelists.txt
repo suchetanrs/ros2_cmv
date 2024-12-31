@@ -65,6 +65,6 @@ install(
 
 ament_export_include_directories(include)
 ament_export_targets(export_${PROJECT_NAME}_${MESSAGE_NAME}_rviz_plugin)
-pluginlib_export_plugin_description_file(rviz_common plugin.xml)
+pluginlib_export_plugin_description_file(rviz_common plugin_${MESSAGE_NAME}.xml)
 
 ament_package()

@@ -7,7 +7,7 @@
 namespace ros2_cmv
 {
     // Function to generate rviz_plugin.xml
-    void generatePluginXML(const std::string &libpath, const std::string &pluginName,
+    void generatePluginXML(const std::string &messageName, const std::string &pluginName,
                            const std::string &output_file, const std::string &project_name);
 
     // Function to generate package.xml

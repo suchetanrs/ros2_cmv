@@ -24,4 +24,4 @@ sensor_msgs/Range range
 geometry_msgs/TwistStamped twist
 geometry_msgs/Twist twist_raw
 geometry_msgs/WrenchStamped wrench
-# geometry_msgs/Wrench wrench_raw
+geometry_msgs/Wrench wrench_raw

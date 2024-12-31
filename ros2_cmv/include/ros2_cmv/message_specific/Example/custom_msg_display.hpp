@@ -7,7 +7,7 @@
 #include "ros2_cmv/cmv_macros.hpp"
 #include INCLUDE_PROJECT_HEADER(custom_msg_process.hpp)
 
-namespace PROJECT_NAME
+namespace MESSAGE_NAME
 {
     class CustomMessageDisplay : public rviz_common::MessageFilterDisplay<CustomMessage>
     {
@@ -33,6 +33,6 @@ namespace PROJECT_NAME
         std::vector<rviz_common::properties::BoolProperty *> memberVisibilityProperties_;
     };
 
-}; // namespace PROJECT_NAME
+}; // namespace MESSAGE_NAME
 
 #endif // CUSTOM_MSG_DISPLAY_HPP_
