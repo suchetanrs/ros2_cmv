@@ -8,7 +8,7 @@ namespace ros2_cmv
         std::ifstream file(msg_file_path);
         if (!file.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << msg_file_path);
+            std::cerr << "Error: Unable to open " << msg_file_path;
             throw std::runtime_error("Error: Unable to open " + msg_file_path);
         }
 
@@ -44,7 +44,7 @@ namespace ros2_cmv
             }
             else
             {
-                // RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Skipping invalid line: " << line);
+                // std::cerr << "Skipping invalid line: " << line);
             }
         }
 
@@ -58,7 +58,7 @@ namespace ros2_cmv
         std::ofstream ofs(output_file);
         if (!ofs.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
+            std::cerr << "Error: Unable to open " << output_file << " for writing.";
             throw std::runtime_error("Error: Unable to open " + output_file + " for writing.");
         }
 
@@ -103,7 +103,7 @@ namespace ros2_cmv
         ofs << "#endif // CUSTOM_MSG_METADATA_HPP_\n";
 
         ofs.close();
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file);
+        std::cout << "Generated " << output_file << std::endl;
     }
 
     void generateProcessMsgFile(std::vector<Message> &messages, const std::string &output_file)
@@ -111,7 +111,7 @@ namespace ros2_cmv
         std::ofstream ofs(output_file);
         if (!ofs.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
+            std::cerr << "Error: Unable to open " << output_file << " for writing.";
             throw std::runtime_error("Error: Unable to open " + output_file + " for writing.");
         }
 
@@ -141,7 +141,7 @@ namespace ros2_cmv
         ofs << "    }\n};\n";
 
         ofs.close();
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file);
+        std::cout << "Generated " << output_file << std::endl;
     }
 
     void copyFile(const std::string &input_path, const std::string &output_path)
@@ -150,7 +150,7 @@ namespace ros2_cmv
         std::ifstream input_file(input_path, std::ios::binary);
         if (!input_file.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << input_path << " for reading.");
+            std::cerr << "Error: Unable to open " << input_path << " for reading.";
             input_file.close();
             throw std::runtime_error("Error: Unable to open " + input_path + " for reading.");
         }
@@ -159,7 +159,7 @@ namespace ros2_cmv
         std::ofstream output_file(output_path, std::ios::binary);
         if (!output_file.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_path << " for writing.");
+            std::cerr << "Error: Unable to open " << output_path << " for writing.";
             output_file.close();
             throw std::runtime_error("Error: Unable to open " + output_path + " for writing.");
         }
@@ -171,6 +171,6 @@ namespace ros2_cmv
         input_file.close();
         output_file.close();
 
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "File copied from " << input_path << " to " << output_path);
+        std::cout << "File copied from " << input_path << " to " << output_path << std::endl;
     }
 }

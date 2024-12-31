@@ -101,12 +101,12 @@ namespace ros2_cmv
 
     PluginGeneratorApp::~PluginGeneratorApp()
     {
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Closed cleanly.");
+        std::cout << "Closed cleanly." << std::endl;
     }
 
     void PluginGeneratorApp::saveSettings()
     {
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Saving settings");
+        std::cout << "Saving settings" << std::endl;
         QSettings settings("ROS2_CMV", "PluginGeneratorApp");
         settings.setValue("customPluginPath", customPluginPath->text());
         settings.setValue("selectedInterface", interfaceComboBox->currentText());
@@ -166,10 +166,7 @@ namespace ros2_cmv
         QStringList lines = fileContent.split('\n');
 
         std::vector<int> validIdx;
-        if (!checkMessageValidity(filePathStr, validIdx))
-        {
-            QMessageBox::critical(this, "Error", QString("Message has either 0 valid lines or does not have header."));
-        }
+        bool messageValid  = checkMessageValidity(filePathStr, validIdx);
 
         QMap<int, bool> lineColors;
         for (auto &idx : validIdx)
@@ -196,6 +193,10 @@ namespace ros2_cmv
             cursor.insertText(lines[i], format);
             cursor.insertBlock();
         }
+        if(!messageValid)
+        {
+            QMessageBox::critical(this, "Error", "The message either has 0 valid lines or does not contain a header. Plugin generation will not work correctly.");
+        }
     }
 
     // Slot to process input data
@@ -219,7 +220,7 @@ namespace ros2_cmv
         {
             outputWsPathStr.pop_back();
         }
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Selected output path: " << outputWsPathStr);
+        std::cout << "Selected output path: " << outputWsPathStr << std::endl;
         auto outputCorePath = outputWsPathStr + "/src/" + rvizPluginName;
 
         // 4. Get the message file path (msgFilePath)
@@ -229,7 +230,14 @@ namespace ros2_cmv
         auto msgFilePath = getMsgPath(package_name, message_name);
 
         // 5. Generate the files
-        generateFiles(msgFilePath, outputCorePath, selectedText, rvizPluginName, true);
+        try {
+            generateFiles(msgFilePath, outputCorePath, selectedText, rvizPluginName, true);
+        } catch (const std::runtime_error& e) {
+            QMessageBox::critical(this, "Error", QString("An error occurred: %1").arg(e.what()));
+        } catch (const std::exception& e) {
+            // Handle other standard exceptions
+            QMessageBox::critical(this, "Error", QString("An error occurred: %1").arg(e.what()));
+        }
     }
 };
 

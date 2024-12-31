@@ -8,7 +8,7 @@ namespace ros2_cmv
         std::ifstream file(msg_file_path);
         if (!file.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << msg_file_path);
+            std::cerr << "Error: Unable to open " << msg_file_path;
             throw std::runtime_error("Error: Unable to open " + msg_file_path);
         }
         std::string line;
@@ -71,11 +71,11 @@ namespace ros2_cmv
             {
                 if (std::filesystem::create_directories(directory))
                 {
-                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Directory created: " << directory);
+                    std::cout << "Directory created: " << directory << std::endl;
                 }
                 else
                 {
-                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Directory already exists: " << directory);
+                    std::cout << "Directory already exists: " << directory << std::endl;
                 }
             }
             catch (const std::filesystem::filesystem_error &e)
@@ -87,32 +87,32 @@ namespace ros2_cmv
         std::vector<int> validIdx;
         if (!checkMessageValidity(msgFilePath, validIdx))
         {
-            throw std::runtime_error("Message" + selectedMessage + "is not valid");
+            throw std::runtime_error("Message " + selectedMessage + " is not valid. It does not have a header or has 0 valid lines.");
         }
 
         // Parse the .msg file
         std::vector<Message> messages = parseMsgFile(msgFilePath, validIdx);
         if (messages.empty())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "No valid messages found in the .msg file.");
+            std::cerr << "No valid messages found in the .msg file.";
             // throw std::runtime_error("No valid messages found in the .msg file.");
         }
 
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "DISPLAY HEADER FILE===================================================================");
+        std::cout << "DISPLAY HEADER FILE===================================================================" << std::endl;
         copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/Example/custom_msg_display.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.hpp");
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "OTHER HEADER FILES===================================================================");
+        std::cout << "OTHER HEADER FILES===================================================================" << std::endl;
         generateMetadataHeader(messages, outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_metadata.hpp", convertToIncludePath(selectedMessage), convertRosTypeToCpp(selectedMessage));
         copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/Example/custom_msg_process.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.hpp");
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "CPP FILES===================================================================");
+        std::cout << "CPP FILES===================================================================" << std::endl;
         copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/message_specific/Example/custom_msg_display.cpp", outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.cpp");
         generateProcessMsgFile(messages, outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.cpp");
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "PLUGIN XML===================================================================");
+        std::cout << "PLUGIN XML===================================================================" << std::endl;
         generatePluginXML(convertToMessageName(selectedMessage), convertToMessageName(selectedMessage), outputPackageDir + "/plugin_" + convertToMessageName(selectedMessage) + ".xml", projectName);
         if (newPackage)
         {
-            RCLCPP_INFO_STREAM(globalValues.getLogger(), "CMAKELISTS TXT===================================================================");
+            std::cout << "CMAKELISTS TXT===================================================================" << std::endl;
             generateCMakeLists(projectName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_cmakelists.txt", outputPackageDir + "/CMakeLists.txt", convertToPackageName(selectedMessage), convertToMessageName(selectedMessage));
-            RCLCPP_INFO_STREAM(globalValues.getLogger(), "PACKAGE XML===================================================================");
+            std::cout << "PACKAGE XML===================================================================" << std::endl;
             generatePackageXML(projectName, getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/base_package.xml", outputPackageDir + "/package.xml", convertToPackageName(selectedMessage));
         }
     }

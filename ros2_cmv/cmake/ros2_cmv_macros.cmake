@@ -64,10 +64,12 @@ macro(generate_rviz_plugin)
             COMMAND "${_plugin_generator_cmake_path}" ${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${_message_file}
             WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
             RESULT_VARIABLE _ret
+            ERROR_VARIABLE _error
         )
 
         if(_ret)
-            message(FATAL_ERROR "plugin_generator_cmake failed with return code ${_ret}")
+            message(WARNING "plugin_generator_cmake failed with return code: ${_ret} \n Error: ${_error}\nSkipping plugin generation for message ${_message_file}.")
+            continue()
         endif()
 
         ############################################## BUILD FILES ###########################################

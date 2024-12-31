@@ -30,8 +30,8 @@ namespace ros2_cmv
         size_t slash_pos = ros_type.find('/');
         if (slash_pos == std::string::npos)
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Invalid ROS type format: " << ros_type);
-            throw std::runtime_error("Invalid ROS type format: " + ros_type);
+            std::cerr << "Invalid ROS type format: " << ros_type;
+            throw std::runtime_error("Invalid ROS type format for conversion from ROS type to CPP type for: " + ros_type);
         }
         std::string package = ros_type.substr(0, slash_pos);
         std::string message = ros_type.substr(slash_pos + 1);
@@ -43,8 +43,8 @@ namespace ros2_cmv
         size_t slash_pos = ros_type.find('/');
         if (slash_pos == std::string::npos)
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Invalid ROS type format: " << ros_type);
-            throw std::runtime_error("Invalid ROS type format: " + ros_type);
+            std::cerr << "Invalid ROS type format: " << ros_type;
+            throw std::runtime_error("Invalid ROS type format for conversion from ROS type to message name for: " + ros_type);
         }
         std::string message = ros_type.substr(slash_pos + 1);
         return message;
@@ -74,7 +74,7 @@ namespace ros2_cmv
         size_t pos = input.rfind('/');
         if (pos == std::string::npos)
         {
-            throw std::runtime_error("Invalid input: No '/' found in the input.");
+            throw std::runtime_error("Invalid input: No '/' found in the input to convert to include path.");
         }
 
         // Split the input into prefix and class name
@@ -104,7 +104,7 @@ namespace ros2_cmv
         std::size_t slashPos = input.find('/');
         if (slashPos == std::string::npos)
         {
-            throw std::runtime_error("Invalid input: No '/' found in the input.");
+            throw std::runtime_error("Invalid input: No '/' found in the input to convert to RViz plugin name.");
         }
 
         // Extract the parts before and after the slash

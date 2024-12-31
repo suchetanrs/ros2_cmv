@@ -17,7 +17,7 @@ namespace ros2_cmv
         // Check if the file extension is .msg
         if (std::filesystem::path(msgName).extension() != ".msg")
         {
-            throw std::runtime_error("Invalid file extension. Expected .msg");
+            throw std::runtime_error("Invalid file extension. Expected .msg while formatting message path.");
         }
 
         // Remove the .msg extension
@@ -55,6 +55,14 @@ int main(int argc, char *argv[])
     std::cout << "relativeMsgPath: " << relativeMsgPath << std::endl;
     std::cout << "msgFilePath: " << msgFilePath << std::endl;
 
-    pluginGeneratorCMake.generatePlugin(msgFilePath, packageName, relativeMsgPath, outputCorePath);
+    try {
+        pluginGeneratorCMake.generatePlugin(msgFilePath, packageName, relativeMsgPath, outputCorePath);
+    } catch (const std::runtime_error& e) {
+        std::cerr << e.what();
+        return 1;
+    } catch (const std::exception& e) {
+        std::cerr << e.what();
+        return 1;
+    }
     return 0;
 }

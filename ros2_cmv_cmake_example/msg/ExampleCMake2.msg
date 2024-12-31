@@ -1,4 +1,4 @@
-std_msgs/Header header
+# std_msgs/Header header
 geometry_msgs/PointStamped point1
 geometry_msgs/PointStamped point21
 geometry_msgs/PointStamped point2

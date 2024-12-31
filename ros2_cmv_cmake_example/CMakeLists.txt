@@ -16,9 +16,9 @@ include_directories(
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-"msg/ExampleCMake.msg"
-"msg/ExampleCMake2.msg"
-DEPENDENCIES builtin_interfaces geometry_msgs nav_msgs sensor_msgs visualization_msgs
+  "msg/ExampleCMake.msg"
+  "msg/ExampleCMake2.msg"
+  DEPENDENCIES builtin_interfaces geometry_msgs nav_msgs sensor_msgs visualization_msgs
 )
 
 generate_rviz_plugin(

@@ -11,7 +11,7 @@ namespace ros2_cmv
             std::ofstream ofs(output_file);
             if (!ofs.is_open())
             {
-                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
+                std::cerr << "Error: Unable to open " << output_file << " for writing.";
                 throw std::runtime_error("Unable to open " + output_file + " for writing.");
             }
 
@@ -26,11 +26,11 @@ namespace ros2_cmv
 
             // Close the file
             ofs.close();
-            RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file);
+            std::cout << "Generated " << output_file << std::endl;
         }
         catch (const std::exception &e)
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: " << e.what());
+            std::cerr << "Error: " << e.what();
             throw std::runtime_error("Error generating " + output_file + ": " + e.what());
         }
     }
@@ -44,7 +44,7 @@ namespace ros2_cmv
             std::ifstream ifs(input_file);
             if (!ifs.is_open())
             {
-                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << input_file << " for reading.");
+                std::cerr << "Error: Unable to open " << input_file << " for reading.";
                 throw std::runtime_error("Unable to open " + input_file + " for reading.");
             }
 
@@ -63,7 +63,7 @@ namespace ros2_cmv
             }
             else
             {
-                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: <name> tag not found in " << input_file);
+                std::cerr << "Error: <name> tag not found in " << input_file;
                 throw std::runtime_error("Error: <name> tag not found in " + input_file);
             }
 
@@ -82,7 +82,7 @@ namespace ros2_cmv
                 }
                 else
                 {
-                    RCLCPP_WARN_STREAM(globalValues.getLogger(), "Dependency '" << additional_package << "' already exists in the package.xml file.");
+                    std::cout << "Dependency '" << additional_package << "' already exists in the package.xml file." << std::endl;
                 }
             }
             else
@@ -94,18 +94,18 @@ namespace ros2_cmv
             std::ofstream ofs(output_file);
             if (!ofs.is_open())
             {
-                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
+                std::cerr << "Error: Unable to open " << output_file << " for writing.";
                 return;
             }
 
             ofs << content;
             ofs.close();
 
-            RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file << " with package name: " << new_name);
+            std::cout << "Generated " << output_file << " with package name: " << new_name << std::endl;
         }
         catch (const std::exception &e)
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: " << e.what());
+            std::cerr << "Error: " << e.what();
             throw std::runtime_error("Error generating " + output_file + ": " + e.what());
         }
     }

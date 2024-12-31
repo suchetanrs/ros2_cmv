@@ -10,7 +10,7 @@ namespace ros2_cmv
         std::ifstream ifs(input_file);
         if (!ifs.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << input_file << " for reading.");
+            std::cerr << "Error: Unable to open " << input_file << " for reading.";
             throw std::runtime_error("Unable to open " + input_file + " for reading.");
         }
 
@@ -44,13 +44,13 @@ namespace ros2_cmv
                 if (insert_pos != std::string::npos)
                 {
                     content.insert(insert_pos + 1, find_package_entry + "\n");
-                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Added find_package entry for '" << additional_package << "'.");
+                    std::cout << "Added find_package entry for '" << additional_package << "'." << std::endl;
                 }
                 else
                 {
                     // If no newline found after last find_package, append at the end
                     content += "\n" + find_package_entry + "\n";
-                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Appended find_package entry for '" << additional_package << "' at the end.");
+                    std::cout << "Appended find_package entry for '" << additional_package << "' at the end." << std::endl;
                 }
             }
             else
@@ -60,7 +60,7 @@ namespace ros2_cmv
         }
         else
         {
-            RCLCPP_WARN_STREAM(globalValues.getLogger(), "find_package for '" << additional_package << "' already exists.");
+            std::cout << "find_package for '" << additional_package << "' already exists." << std::endl;
         }
 
         // 3. Add the additional package to the dependencies set
@@ -77,16 +77,16 @@ namespace ros2_cmv
                 {
                     // Insert the additional package before the closing parenthesis
                     content.insert(close_paren, additional_package);
-                    RCLCPP_INFO_STREAM(globalValues.getLogger(), "Added '" << additional_package << "' to dependencies.");
+                    std::cout << "Added '" << additional_package << "' to dependencies." << std::endl;
                 }
                 else
                 {
-                    RCLCPP_WARN_STREAM(globalValues.getLogger(), "Dependency '" << additional_package << "' already exists.");
+                    std::cout << "Dependency '" << additional_package << "' already exists." << std::endl;
                 }
             }
             else
             {
-                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Warning: Malformed dependencies set. Unable to add dependency.");
+                std::cerr << "Warning: Malformed dependencies set. Unable to add dependency.";
                 throw std::runtime_error("Malformed dependencies set in the base CMakeLists.txt.");
             }
         }
@@ -105,30 +105,30 @@ namespace ros2_cmv
             if (end != std::string::npos)
             {
                 content.replace(start, end - start, messageName);
-                RCLCPP_INFO_STREAM(globalValues.getLogger(), "Replaced MESSAGE_NAME with '" << messageName << "'.");
+                std::cout << "Replaced MESSAGE_NAME with '" << messageName << "'." << std::endl;
             }
             else
             {
-                RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Malformed MESSAGE_NAME entry in the CMakeLists.txt.");
+                std::cerr << "Malformed MESSAGE_NAME entry in the CMakeLists.txt.";
                 throw std::runtime_error("Malformed MESSAGE_NAME entry in the base CMakeLists.txt.");
             }
         }
         else
         {
-            RCLCPP_WARN_STREAM(globalValues.getLogger(), "No MESSAGE_NAME entry found to replace.");
+            std::cout << "No MESSAGE_NAME entry found to replace." << std::endl;
         }
 
         // Write the modified content to the output file
         std::ofstream ofs(output_file);
         if (!ofs.is_open())
         {
-            RCLCPP_ERROR_STREAM(globalValues.getLogger(), "Error: Unable to open " << output_file << " for writing.");
+            std::cerr << "Error: Unable to open " << output_file << " for writing.";
             throw std::runtime_error("Unable to open " + output_file + " for writing.");
         }
 
         ofs << content;
         ofs.close();
 
-        RCLCPP_INFO_STREAM(globalValues.getLogger(), "Generated " << output_file << " with project name: " << project_name);
+        std::cout << "Generated " << output_file << " with project name: " << project_name << std::endl;
     }
 }
