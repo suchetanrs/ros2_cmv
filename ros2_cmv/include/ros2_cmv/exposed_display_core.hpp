@@ -103,6 +103,11 @@ namespace ros2_cmv
             }
         }
 
+        std::unordered_map<std::string, Creator> getCreators()
+        {
+            return creators;
+        }
+
     private:
         std::unordered_map<std::string, Creator> creators;
     };

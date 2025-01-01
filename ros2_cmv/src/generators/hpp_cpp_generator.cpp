@@ -76,7 +76,7 @@ namespace ros2_cmv
         ofs << "using CustomMessage = " << CUSTOM_MESSAGE_TYPE << ";\n\n";
 
         // variableTypes Vector
-        ofs << "static const std::vector<std::string> variableTypes = {\n";
+        ofs << "static std::vector<std::string> variableTypes = {\n";
         for (const auto &msg : messages)
         {
             if (msg.type == "std_msgs/Header")
@@ -88,7 +88,7 @@ namespace ros2_cmv
         ofs << "};\n\n";
 
         // variableNames Vector
-        ofs << "static const std::vector<std::string> variableNames = {\n";
+        ofs << "static std::vector<std::string> variableNames = {\n";
         for (const auto &msg : messages)
         {
             if (msg.type == "std_msgs/Header")

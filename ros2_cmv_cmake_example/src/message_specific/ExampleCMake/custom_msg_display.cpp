@@ -9,14 +9,24 @@ namespace MESSAGE_NAME
 {
     CustomMessageDisplay::CustomMessageDisplay()
     {
+        enableAllMembersProperty_ = new rviz_common::properties::BoolProperty(
+            "Enable all members",
+            false,
+            "Whether or not all members should be shown.",
+            this,
+            SLOT(enableAllMembersChanged()));
+
+        messageMemberProperty_ = new rviz_common::properties::Property("Message Members", QVariant(), "", this);
+
         for (auto &name : variableNames)
         {
             auto showMemberProperty_ = new rviz_common::properties::BoolProperty(
                 QString("Show ") + QString::fromStdString(name),
                 false,
                 "Whether or not names should be shown next to the frames.",
-                this,
-                SLOT(updateMemberVisibility()));
+                messageMemberProperty_,
+                SLOT(updateMemberVisibility()),
+                this);
 
             memberVisibilityProperties_.push_back(showMemberProperty_);
         }
@@ -24,7 +34,6 @@ namespace MESSAGE_NAME
 
     CustomMessageDisplay::~CustomMessageDisplay()
     {
-        // Clean up if necessary
     }
 
     void CustomMessageDisplay::onEnable()
@@ -93,6 +102,17 @@ namespace MESSAGE_NAME
                 enabledInstances_[variableNames[idx]] = displayInstances_[variableNames[idx]];
             }
         }
+    }
+
+    void CustomMessageDisplay::enableAllMembersChanged()
+    {
+        bool enabledAllMembers = enableAllMembersProperty_->getBool();
+        for (size_t idx = 0; idx < memberVisibilityProperties_.size(); idx++)
+        {
+            auto property = memberVisibilityProperties_[idx];
+            property->setBool(enabledAllMembers);
+        }
+        updateMemberVisibility();
     }
 
 } // namespace MESSAGE_NAME

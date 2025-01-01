@@ -1,24 +1,26 @@
 #ifndef EXPOSED_DISPLAYS_HPP_
 #define EXPOSED_DISPLAYS_HPP_
 
+#if defined(ROS_DISTRO_JAZZY) || defined(ROS_DISTRO_ROLLING)
 #include <rviz_default_plugins/displays/accel/accel_display.hpp>
 #include <rviz_default_plugins/displays/camera_info/camera_info_display.hpp>
+#include <rviz_default_plugins/displays/marker/marker_display.hpp>
+#include <rviz_default_plugins/displays/marker_array/marker_array_display.hpp>
+#include <rviz_default_plugins/displays/pose/pose_display.hpp>
+#include <rviz_default_plugins/displays/pose_covariance/pose_with_covariance_display.hpp>
+#include <rviz_default_plugins/displays/twist/twist_display.hpp>
+#endif
 // #include <rviz_default_plugins/displays/effort/effort_display.hpp>
 #include <rviz_default_plugins/displays/grid_cells/grid_cells_display.hpp>
 #include <rviz_default_plugins/displays/laser_scan/laser_scan_display.hpp>
 #include <rviz_default_plugins/displays/map/map_display.hpp>
-#include <rviz_default_plugins/displays/marker/marker_display.hpp>
-#include <rviz_default_plugins/displays/marker_array/marker_array_display.hpp>
 #include <rviz_default_plugins/displays/odometry/odometry_display.hpp>
 #include <rviz_default_plugins/displays/path/path_display.hpp>
 #include <rviz_default_plugins/displays/point/point_stamped_display.hpp>
 #include <rviz_default_plugins/displays/pointcloud/point_cloud2_display.hpp>
 #include <rviz_default_plugins/displays/polygon/polygon_display.hpp>
-#include <rviz_default_plugins/displays/pose/pose_display.hpp>
 #include <rviz_default_plugins/displays/pose_array/pose_array_display.hpp>
-#include <rviz_default_plugins/displays/pose_covariance/pose_with_covariance_display.hpp>
 #include <rviz_default_plugins/displays/range/range_display.hpp>
-#include <rviz_default_plugins/displays/twist/twist_display.hpp>
 #include <rviz_default_plugins/displays/wrench/wrench_display.hpp>
 
 #include "ros2_cmv/exposed_display_core.hpp"
@@ -26,6 +28,7 @@
 
 namespace ros2_cmv
 {
+#if defined(ROS_DISTRO_JAZZY) || defined(ROS_DISTRO_ROLLING)
     /////////////////////////////////////////////////////////////////////
 
     using ExposedAccelStampedType = ExposedDisplay<rviz_default_plugins::displays::AccelStampedDisplay, geometry_msgs::msg::AccelStamped::ConstSharedPtr>;
@@ -74,6 +77,107 @@ namespace ros2_cmv
 
     /////////////////////////////////////////////////////////////////////
 
+    using ExposedMarkerType = ExposedDisplay<rviz_default_plugins::displays::MarkerDisplay, visualization_msgs::msg::Marker::ConstSharedPtr>;
+    class ExposedMarkerDisplay : public ExposedMarkerType
+    {
+    public:
+        ExposedMarkerDisplay(rviz_common::DisplayContext *context) : ExposedMarkerType(context) {};
+    };
+    REGISTER_DISPLAY_CLASS("visualization_msgs/Marker", ExposedMarkerDisplay)
+
+    /////////////////////////////////////////////////////////////////////
+
+    using ExposedMarkerArrayType = ExposedDisplay<rviz_default_plugins::displays::MarkerArrayDisplay, visualization_msgs::msg::MarkerArray::ConstSharedPtr>;
+    class ExposedMarkerArrayDisplay : public ExposedMarkerArrayType
+    {
+    public:
+        ExposedMarkerArrayDisplay(rviz_common::DisplayContext *context) : ExposedMarkerArrayType(context) {};
+    };
+    REGISTER_DISPLAY_CLASS("visualization_msgs/MarkerArray", ExposedMarkerArrayDisplay)
+
+    /////////////////////////////////////////////////////////////////////
+
+    using ExposedPoseStampedType = ExposedDisplay<rviz_default_plugins::displays::PoseDisplay, geometry_msgs::msg::PoseStamped::ConstSharedPtr>;
+    class ExposedPoseStampedDisplay : public ExposedPoseStampedType
+    {
+    public:
+        ExposedPoseStampedDisplay(rviz_common::DisplayContext *context) : ExposedPoseStampedType(context) {};
+    };
+    REGISTER_DISPLAY_CLASS("geometry_msgs/PoseStamped", ExposedPoseStampedDisplay)
+
+    class ExposedPoseDisplay : public ExposedPoseStampedDisplay
+    {
+    public:
+        ExposedPoseDisplay(rviz_common::DisplayContext *context) : ExposedPoseStampedDisplay(context) {};
+
+        void processMessage(std::any param) override
+        {
+            auto poseStamped = std::make_shared<geometry_msgs::msg::PoseStamped>();
+            poseStamped->header = globalValues.getHeader();
+            poseStamped->pose = *(castMessage<geometry_msgs::msg::Pose::ConstSharedPtr>(param));
+            geometry_msgs::msg::PoseStamped::ConstSharedPtr poseStampedConst = poseStamped;
+            ExposedPoseStampedDisplay::processMessage(poseStampedConst);
+        }
+    };
+    REGISTER_DISPLAY_CLASS("geometry_msgs/Pose", ExposedPoseDisplay)
+
+    /////////////////////////////////////////////////////////////////////
+
+    using ExposedPoseWithCovarianceType = ExposedDisplay<rviz_default_plugins::displays::PoseWithCovarianceDisplay, geometry_msgs::msg::PoseWithCovarianceStamped::ConstSharedPtr>;
+    class ExposedPoseWithCovarianceStampedDisplay : public ExposedPoseWithCovarianceType
+    {
+    public:
+        ExposedPoseWithCovarianceStampedDisplay(rviz_common::DisplayContext *context) : ExposedPoseWithCovarianceType(context) {};
+    };
+    REGISTER_DISPLAY_CLASS("geometry_msgs/PoseWithCovarianceStamped", ExposedPoseWithCovarianceStampedDisplay)
+
+    class ExposedPoseWithCovarianceDisplay : public ExposedPoseWithCovarianceStampedDisplay
+    {
+    public:
+        explicit ExposedPoseWithCovarianceDisplay(rviz_common::DisplayContext *context) : ExposedPoseWithCovarianceStampedDisplay(context) {}
+
+        void processMessage(std::any param) override
+        {
+            auto poseWithCovarianceStamped = std::make_shared<geometry_msgs::msg::PoseWithCovarianceStamped>();
+            poseWithCovarianceStamped->header = globalValues.getHeader();
+            poseWithCovarianceStamped->pose = *(castMessage<geometry_msgs::msg::PoseWithCovariance::ConstSharedPtr>(param));
+            geometry_msgs::msg::PoseWithCovarianceStamped::ConstSharedPtr poseWithCovarianceStampedConst = poseWithCovarianceStamped;
+            ExposedPoseWithCovarianceStampedDisplay::processMessage(poseWithCovarianceStampedConst);
+        }
+    };
+
+    REGISTER_DISPLAY_CLASS("geometry_msgs/PoseWithCovariance", ExposedPoseWithCovarianceDisplay)
+    
+    /////////////////////////////////////////////////////////////////////
+
+    using ExposedTwistStampedType = ExposedDisplay<rviz_default_plugins::displays::TwistStampedDisplay, geometry_msgs::msg::TwistStamped::ConstSharedPtr>;
+    class ExposedTwistStampedDisplay : public ExposedTwistStampedType
+    {
+    public:
+        ExposedTwistStampedDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedType(context) {};
+    };
+    REGISTER_DISPLAY_CLASS("geometry_msgs/TwistStamped", ExposedTwistStampedDisplay)
+
+    class ExposedTwistDisplay : public ExposedTwistStampedDisplay
+    {
+    public:
+        explicit ExposedTwistDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedDisplay(context) {}
+
+        void processMessage(std::any param) override
+        {
+            auto twistStamped = std::make_shared<geometry_msgs::msg::TwistStamped>();
+            twistStamped->header = globalValues.getHeader();
+            twistStamped->twist = *(castMessage<geometry_msgs::msg::Twist::ConstSharedPtr>(param));
+            geometry_msgs::msg::TwistStamped::ConstSharedPtr twistStampedConst = twistStamped;
+            ExposedTwistStampedDisplay::processMessage(twistStampedConst);
+        }
+    };
+
+    REGISTER_DISPLAY_CLASS("geometry_msgs/Twist", ExposedTwistDisplay)
+
+#endif
+    /////////////////////////////////////////////////////////////////////
+
     using ExposedGridCellsType = ExposedDisplay<rviz_default_plugins::displays::GridCellsDisplay, nav_msgs::msg::GridCells::ConstSharedPtr>;
     class ExposedGridCellsDisplay : public ExposedGridCellsType
     {
@@ -101,26 +205,6 @@ namespace ros2_cmv
         ExposedMapDisplay(rviz_common::DisplayContext *context) : ExposedMapType(context) {};
     };
     REGISTER_DISPLAY_CLASS("nav_msgs/OccupancyGrid", ExposedMapDisplay)
-
-    /////////////////////////////////////////////////////////////////////
-
-    using ExposedMarkerType = ExposedDisplay<rviz_default_plugins::displays::MarkerDisplay, visualization_msgs::msg::Marker::ConstSharedPtr>;
-    class ExposedMarkerDisplay : public ExposedMarkerType
-    {
-    public:
-        ExposedMarkerDisplay(rviz_common::DisplayContext *context) : ExposedMarkerType(context) {};
-    };
-    REGISTER_DISPLAY_CLASS("visualization_msgs/Marker", ExposedMarkerDisplay)
-
-    /////////////////////////////////////////////////////////////////////
-
-    using ExposedMarkerArrayType = ExposedDisplay<rviz_default_plugins::displays::MarkerArrayDisplay, visualization_msgs::msg::MarkerArray::ConstSharedPtr>;
-    class ExposedMarkerArrayDisplay : public ExposedMarkerArrayType
-    {
-    public:
-        ExposedMarkerArrayDisplay(rviz_common::DisplayContext *context) : ExposedMarkerArrayType(context) {};
-    };
-    REGISTER_DISPLAY_CLASS("visualization_msgs/MarkerArray", ExposedMarkerArrayDisplay)
 
     /////////////////////////////////////////////////////////////////////
 
@@ -206,32 +290,6 @@ namespace ros2_cmv
 
     /////////////////////////////////////////////////////////////////////
 
-    using ExposedPoseStampedType = ExposedDisplay<rviz_default_plugins::displays::PoseDisplay, geometry_msgs::msg::PoseStamped::ConstSharedPtr>;
-    class ExposedPoseStampedDisplay : public ExposedPoseStampedType
-    {
-    public:
-        ExposedPoseStampedDisplay(rviz_common::DisplayContext *context) : ExposedPoseStampedType(context) {};
-    };
-    REGISTER_DISPLAY_CLASS("geometry_msgs/PoseStamped", ExposedPoseStampedDisplay)
-
-    class ExposedPoseDisplay : public ExposedPoseStampedDisplay
-    {
-    public:
-        ExposedPoseDisplay(rviz_common::DisplayContext *context) : ExposedPoseStampedDisplay(context) {};
-
-        void processMessage(std::any param) override
-        {
-            auto poseStamped = std::make_shared<geometry_msgs::msg::PoseStamped>();
-            poseStamped->header = globalValues.getHeader();
-            poseStamped->pose = *(castMessage<geometry_msgs::msg::Pose::ConstSharedPtr>(param));
-            geometry_msgs::msg::PoseStamped::ConstSharedPtr poseStampedConst = poseStamped;
-            ExposedPoseStampedDisplay::processMessage(poseStampedConst);
-        }
-    };
-    REGISTER_DISPLAY_CLASS("geometry_msgs/Pose", ExposedPoseDisplay)
-
-    /////////////////////////////////////////////////////////////////////
-
     using ExposedPoseArrayType = ExposedDisplay<rviz_default_plugins::displays::PoseArrayDisplay, geometry_msgs::msg::PoseArray::ConstSharedPtr>;
     class ExposedPoseArrayDisplay : public ExposedPoseArrayType
     {
@@ -242,33 +300,6 @@ namespace ros2_cmv
 
     /////////////////////////////////////////////////////////////////////
 
-    using ExposedPoseWithCovarianceType = ExposedDisplay<rviz_default_plugins::displays::PoseWithCovarianceDisplay, geometry_msgs::msg::PoseWithCovarianceStamped::ConstSharedPtr>;
-    class ExposedPoseWithCovarianceStampedDisplay : public ExposedPoseWithCovarianceType
-    {
-    public:
-        ExposedPoseWithCovarianceStampedDisplay(rviz_common::DisplayContext *context) : ExposedPoseWithCovarianceType(context) {};
-    };
-    REGISTER_DISPLAY_CLASS("geometry_msgs/PoseWithCovarianceStamped", ExposedPoseWithCovarianceStampedDisplay)
-
-    class ExposedPoseWithCovarianceDisplay : public ExposedPoseWithCovarianceStampedDisplay
-    {
-    public:
-        explicit ExposedPoseWithCovarianceDisplay(rviz_common::DisplayContext *context) : ExposedPoseWithCovarianceStampedDisplay(context) {}
-
-        void processMessage(std::any param) override
-        {
-            auto poseWithCovarianceStamped = std::make_shared<geometry_msgs::msg::PoseWithCovarianceStamped>();
-            poseWithCovarianceStamped->header = globalValues.getHeader();
-            poseWithCovarianceStamped->pose = *(castMessage<geometry_msgs::msg::PoseWithCovariance::ConstSharedPtr>(param));
-            geometry_msgs::msg::PoseWithCovarianceStamped::ConstSharedPtr poseWithCovarianceStampedConst = poseWithCovarianceStamped;
-            ExposedPoseWithCovarianceStampedDisplay::processMessage(poseWithCovarianceStampedConst);
-        }
-    };
-
-    REGISTER_DISPLAY_CLASS("geometry_msgs/PoseWithCovariance", ExposedPoseWithCovarianceDisplay)
-
-    /////////////////////////////////////////////////////////////////////
-
     using ExposedRangeType = ExposedDisplay<rviz_default_plugins::displays::RangeDisplay, sensor_msgs::msg::Range::ConstSharedPtr>;
     class ExposedRangeDisplay : public ExposedRangeType
     {
@@ -276,33 +307,6 @@ namespace ros2_cmv
         ExposedRangeDisplay(rviz_common::DisplayContext *context) : ExposedRangeType(context) {};
     };
     REGISTER_DISPLAY_CLASS("sensor_msgs/Range", ExposedRangeDisplay)
-
-    /////////////////////////////////////////////////////////////////////
-
-    using ExposedTwistStampedType = ExposedDisplay<rviz_default_plugins::displays::TwistStampedDisplay, geometry_msgs::msg::TwistStamped::ConstSharedPtr>;
-    class ExposedTwistStampedDisplay : public ExposedTwistStampedType
-    {
-    public:
-        ExposedTwistStampedDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedType(context) {};
-    };
-    REGISTER_DISPLAY_CLASS("geometry_msgs/TwistStamped", ExposedTwistStampedDisplay)
-
-    class ExposedTwistDisplay : public ExposedTwistStampedDisplay
-    {
-    public:
-        explicit ExposedTwistDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedDisplay(context) {}
-
-        void processMessage(std::any param) override
-        {
-            auto twistStamped = std::make_shared<geometry_msgs::msg::TwistStamped>();
-            twistStamped->header = globalValues.getHeader();
-            twistStamped->twist = *(castMessage<geometry_msgs::msg::Twist::ConstSharedPtr>(param));
-            geometry_msgs::msg::TwistStamped::ConstSharedPtr twistStampedConst = twistStamped;
-            ExposedTwistStampedDisplay::processMessage(twistStampedConst);
-        }
-    };
-
-    REGISTER_DISPLAY_CLASS("geometry_msgs/Twist", ExposedTwistDisplay)
 
     /////////////////////////////////////////////////////////////////////
 

@@ -25,12 +25,15 @@ namespace MESSAGE_NAME
         void processMessage(CustomMessage::ConstSharedPtr msg) override;
     private Q_SLOTS:
         void updateMemberVisibility();
+        void enableAllMembersChanged();
 
     private:
         std::mutex displayMutex_;
         std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>> displayInstances_;
         std::unordered_map<std::string, std::shared_ptr<ros2_cmv::IExposedDisplay>> enabledInstances_;
         std::vector<rviz_common::properties::BoolProperty *> memberVisibilityProperties_;
+        rviz_common::properties::BoolProperty *enableAllMembersProperty_;
+        rviz_common::properties::Property * messageMemberProperty_;
     };
 
 }; // namespace MESSAGE_NAME

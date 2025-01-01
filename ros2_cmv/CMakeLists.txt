@@ -9,6 +9,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g1")
+string(TOUPPER $ENV{ROS_DISTRO} ROS_DISTRO)
+add_definitions(-DROS_DISTRO_${ROS_DISTRO})
 
 ## --------------- FIND PACKAGES --------------- ##
 ## --------------------------------------------- ##
