@@ -9,6 +9,26 @@ namespace MESSAGE_NAME
 {
     CustomMessageDisplay::CustomMessageDisplay()
     {
+        // cleanup the messages that are not supported.
+        auto displayFactoryInstance = ros2_cmv::DisplayFactory::instance();
+        bool allOk = true;
+        for (size_t i = 0; i < variableTypes.size();)
+        {
+            if (displayFactoryInstance.getCreators().count(variableTypes[i]) == 0)
+            {
+                std::cout << "Display for : " << variableTypes[i] << " is not created." << std::endl;
+                variableTypes.erase(variableTypes.begin() + i);
+                variableNames.erase(variableNames.begin() + i);
+                allOk = false;
+            }
+            else
+            {
+                ++i;
+            }
+        }
+        if (!allOk)
+            std::cout << "!!! Use the rolling distro of ROS for the support of these message types. !!! " << std::endl;
+
         enableAllMembersProperty_ = new rviz_common::properties::BoolProperty(
             "Enable all members",
             false,

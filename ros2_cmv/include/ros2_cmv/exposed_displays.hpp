@@ -1,14 +1,16 @@
 #ifndef EXPOSED_DISPLAYS_HPP_
 #define EXPOSED_DISPLAYS_HPP_
 
-#if defined(ROS_DISTRO_JAZZY) || defined(ROS_DISTRO_ROLLING)
+#if defined(ROS_DISTRO_SOURCE)
 #include <rviz_default_plugins/displays/accel/accel_display.hpp>
+#include <rviz_default_plugins/displays/twist/twist_display.hpp>
+#endif
+#if defined(ROS_DISTRO_JAZZY) || defined(ROS_DISTRO_ROLLING)
 #include <rviz_default_plugins/displays/camera_info/camera_info_display.hpp>
 #include <rviz_default_plugins/displays/marker/marker_display.hpp>
 #include <rviz_default_plugins/displays/marker_array/marker_array_display.hpp>
 #include <rviz_default_plugins/displays/pose/pose_display.hpp>
 #include <rviz_default_plugins/displays/pose_covariance/pose_with_covariance_display.hpp>
-#include <rviz_default_plugins/displays/twist/twist_display.hpp>
 #endif
 // #include <rviz_default_plugins/displays/effort/effort_display.hpp>
 #include <rviz_default_plugins/displays/grid_cells/grid_cells_display.hpp>
@@ -28,7 +30,8 @@
 
 namespace ros2_cmv
 {
-#if defined(ROS_DISTRO_JAZZY) || defined(ROS_DISTRO_ROLLING)
+
+#if defined(ROS_DISTRO_SOURCE)
     /////////////////////////////////////////////////////////////////////
 
     using ExposedAccelStampedType = ExposedDisplay<rviz_default_plugins::displays::AccelStampedDisplay, geometry_msgs::msg::AccelStamped::ConstSharedPtr>;
@@ -54,6 +57,36 @@ namespace ros2_cmv
         }
     };
     REGISTER_DISPLAY_CLASS("geometry_msgs/Accel", ExposedAccelDisplay)
+
+    /////////////////////////////////////////////////////////////////////
+
+    using ExposedTwistStampedType = ExposedDisplay<rviz_default_plugins::displays::TwistStampedDisplay, geometry_msgs::msg::TwistStamped::ConstSharedPtr>;
+    class ExposedTwistStampedDisplay : public ExposedTwistStampedType
+    {
+    public:
+        ExposedTwistStampedDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedType(context) {};
+    };
+    REGISTER_DISPLAY_CLASS("geometry_msgs/TwistStamped", ExposedTwistStampedDisplay)
+
+    class ExposedTwistDisplay : public ExposedTwistStampedDisplay
+    {
+    public:
+        explicit ExposedTwistDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedDisplay(context) {}
+
+        void processMessage(std::any param) override
+        {
+            auto twistStamped = std::make_shared<geometry_msgs::msg::TwistStamped>();
+            twistStamped->header = globalValues.getHeader();
+            twistStamped->twist = *(castMessage<geometry_msgs::msg::Twist::ConstSharedPtr>(param));
+            geometry_msgs::msg::TwistStamped::ConstSharedPtr twistStampedConst = twistStamped;
+            ExposedTwistStampedDisplay::processMessage(twistStampedConst);
+        }
+    };
+
+    REGISTER_DISPLAY_CLASS("geometry_msgs/Twist", ExposedTwistDisplay)
+#endif
+
+#if defined(ROS_DISTRO_ROLLING) || defined(ROS_DISTRO_JAZZY)
 
     /////////////////////////////////////////////////////////////////////
 
@@ -147,33 +180,6 @@ namespace ros2_cmv
     };
 
     REGISTER_DISPLAY_CLASS("geometry_msgs/PoseWithCovariance", ExposedPoseWithCovarianceDisplay)
-    
-    /////////////////////////////////////////////////////////////////////
-
-    using ExposedTwistStampedType = ExposedDisplay<rviz_default_plugins::displays::TwistStampedDisplay, geometry_msgs::msg::TwistStamped::ConstSharedPtr>;
-    class ExposedTwistStampedDisplay : public ExposedTwistStampedType
-    {
-    public:
-        ExposedTwistStampedDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedType(context) {};
-    };
-    REGISTER_DISPLAY_CLASS("geometry_msgs/TwistStamped", ExposedTwistStampedDisplay)
-
-    class ExposedTwistDisplay : public ExposedTwistStampedDisplay
-    {
-    public:
-        explicit ExposedTwistDisplay(rviz_common::DisplayContext *context) : ExposedTwistStampedDisplay(context) {}
-
-        void processMessage(std::any param) override
-        {
-            auto twistStamped = std::make_shared<geometry_msgs::msg::TwistStamped>();
-            twistStamped->header = globalValues.getHeader();
-            twistStamped->twist = *(castMessage<geometry_msgs::msg::Twist::ConstSharedPtr>(param));
-            geometry_msgs::msg::TwistStamped::ConstSharedPtr twistStampedConst = twistStamped;
-            ExposedTwistStampedDisplay::processMessage(twistStampedConst);
-        }
-    };
-
-    REGISTER_DISPLAY_CLASS("geometry_msgs/Twist", ExposedTwistDisplay)
 
 #endif
     /////////////////////////////////////////////////////////////////////

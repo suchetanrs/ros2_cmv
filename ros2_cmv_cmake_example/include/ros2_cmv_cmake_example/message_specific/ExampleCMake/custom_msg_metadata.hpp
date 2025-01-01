@@ -7,7 +7,7 @@
 
 using CustomMessage = ros2_cmv_cmake_example::msg::ExampleCMake;
 
-static const std::vector<std::string> variableTypes = {
+static std::vector<std::string> variableTypes = {
     "geometry_msgs/AccelStamped",
     "geometry_msgs/Accel",
     "sensor_msgs/CameraInfo",
@@ -36,7 +36,7 @@ static const std::vector<std::string> variableTypes = {
     "geometry_msgs/Wrench",
 };
 
-static const std::vector<std::string> variableNames = {
+static std::vector<std::string> variableNames = {
     "accel",
     "accel_raw",
     "camera_info",
