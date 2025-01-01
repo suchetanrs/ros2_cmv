@@ -1,0 +1,21 @@
+services:
+  cmv_jazzy:
+    image: cmv_jazzy:latest
+    volumes:
+      #full dev
+      - /dev:/dev:rw
+      #full media
+      - /media:/media:rw
+      #Time
+      - /etc/timezone:/etc/timezone:rw
+      - /etc/localtime:/etc/localtime:rw
+      #cmv
+      - ../../:/root/ros2_ws/src/cmv:rw
+    privileged: true
+    network_mode: host
+    ipc: host
+    stdin_open: true
+    tty: true
+    environment:
+      - DISPLAY
+    entrypoint: /bin/bash
