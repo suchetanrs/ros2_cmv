@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<library path="ros2_cmv_cmake_example_ExampleCMake_rviz_plugin">
-  <class name="ExampleCMake" type="ExampleCMake::CustomMessageDisplay" base_class_type="rviz_common::Display">
-    <description>Custom message display for RViz</description>
-  </class>
-</library>

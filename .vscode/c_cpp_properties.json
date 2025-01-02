@@ -5,9 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/**",
-                "/home/rosuser/ros2_rolling/src/**",
-                "/home/rosuser/ros2_rolling/build/**",
-                "/home/rosuser/ros2_rolling/install/**"
+                "~/ROS2_SOURCE/container_root/ros2_ws/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang-18",

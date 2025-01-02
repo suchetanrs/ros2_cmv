@@ -20,7 +20,7 @@ find_package(pluginlib REQUIRED)
 find_package(rviz_common REQUIRED)
 find_package(rviz_rendering REQUIRED)
 find_package(rviz_default_plugins REQUIRED)
-find_package(ros2_cmv_example REQUIRED)
+find_package(ros2_cmv_msgs REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
@@ -29,7 +29,7 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 ## --------------------------------------- ##
 
 set(CMAKE_AUTOMOC ON)
-set(MESSAGE_NAME "Example")
+set(MESSAGE_NAME "AllTypes")
 include_directories(${rviz_default_plugins_INCLUDE_DIRS})
 
 ## --------------- CMV_COMMON --------------- ##
@@ -87,7 +87,7 @@ ament_target_dependencies(custom_msg_display
   pluginlib
   rviz_rendering
   rviz_default_plugins
-  ros2_cmv_example
+  ros2_cmv_msgs
 )
 target_link_libraries(custom_msg_display cmv_common rviz_default_plugins::rviz_default_plugins Qt5::Widgets)
 
@@ -123,7 +123,7 @@ target_include_directories(cmv_generator
 ament_target_dependencies(cmv_generator
   rviz_common
   pluginlib
-  ros2_cmv_example
+  ros2_cmv_msgs
   ament_index_cpp
 )
 target_link_libraries(cmv_generator cmv_common)
@@ -161,7 +161,7 @@ target_include_directories(plugin_generator_app
 ament_target_dependencies(plugin_generator_app
   rviz_common
   pluginlib
-  ros2_cmv_example
+  ros2_cmv_msgs
   ament_index_cpp
 )
 
@@ -192,7 +192,7 @@ ament_target_dependencies(plugin_generator_cmake
   pluginlib
   rviz_rendering
   rviz_default_plugins
-  ros2_cmv_example
+  ros2_cmv_msgs
   ament_index_cpp
 )
 

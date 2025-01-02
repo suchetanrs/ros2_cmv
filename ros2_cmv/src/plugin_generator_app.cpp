@@ -1,3 +1,24 @@
+/**
+    Copyright 2025 Suchetan Saravanan.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+*/
+
 #include "ros2_cmv/plugin_generator_app.hpp"
 
 namespace ros2_cmv
@@ -30,7 +51,6 @@ namespace ros2_cmv
         imageLabel->setAlignment(Qt::AlignRight);
         legendLayout->addWidget(imageLabel);
         mainLayout->addLayout(legendLayout);
-
 
         // ======================================= Section 1: Content Display =======================================
         contentDisplay = new QTextEdit(this);
@@ -166,7 +186,7 @@ namespace ros2_cmv
         QStringList lines = fileContent.split('\n');
 
         std::vector<int> validIdx;
-        bool messageValid  = checkMessageValidity(filePathStr, validIdx);
+        bool messageValid = checkMessageValidity(filePathStr, validIdx);
 
         QMap<int, bool> lineColors;
         for (auto &idx : validIdx)
@@ -193,7 +213,7 @@ namespace ros2_cmv
             cursor.insertText(lines[i], format);
             cursor.insertBlock();
         }
-        if(!messageValid)
+        if (!messageValid)
         {
             QMessageBox::critical(this, "Error", "The message either has 0 valid lines or does not contain a header. Plugin generation will not work correctly.");
         }
@@ -230,11 +250,16 @@ namespace ros2_cmv
         auto msgFilePath = getMsgPath(package_name, message_name);
 
         // 5. Generate the files
-        try {
+        try
+        {
             generateFiles(msgFilePath, outputCorePath, selectedText, rvizPluginName, true);
-        } catch (const std::runtime_error& e) {
+        }
+        catch (const std::runtime_error &e)
+        {
             QMessageBox::critical(this, "Error", QString("An error occurred: %1").arg(e.what()));
-        } catch (const std::exception& e) {
+        }
+        catch (const std::exception &e)
+        {
             // Handle other standard exceptions
             QMessageBox::critical(this, "Error", QString("An error occurred: %1").arg(e.what()));
         }

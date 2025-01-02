@@ -1,3 +1,24 @@
+/**
+    Copyright 2025 Suchetan Saravanan.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+*/
+
 #include "ros2_cmv/generators/generator.hpp"
 
 namespace ros2_cmv
@@ -99,12 +120,12 @@ namespace ros2_cmv
         }
 
         std::cout << "DISPLAY HEADER FILE===================================================================" << std::endl;
-        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/Example/custom_msg_display.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.hpp");
+        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/AllTypes/custom_msg_display.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.hpp");
         std::cout << "OTHER HEADER FILES===================================================================" << std::endl;
         generateMetadataHeader(messages, outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_metadata.hpp", convertToIncludePath(selectedMessage), convertRosTypeToCpp(selectedMessage));
-        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/Example/custom_msg_process.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.hpp");
+        copyFile(getPackagePrefix("ros2_cmv") + "/include/ros2_cmv/message_specific/AllTypes/custom_msg_process.hpp", outputPackageDir + "/include/" + projectName + "/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.hpp");
         std::cout << "CPP FILES===================================================================" << std::endl;
-        copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/message_specific/Example/custom_msg_display.cpp", outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.cpp");
+        copyFile(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/message_specific/AllTypes/custom_msg_display.cpp", outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_display.cpp");
         generateProcessMsgFile(messages, outputPackageDir + "/src/message_specific/" + convertToMessageName(selectedMessage) + "/custom_msg_process.cpp");
         std::cout << "PLUGIN XML===================================================================" << std::endl;
         generatePluginXML(convertToMessageName(selectedMessage), convertToMessageName(selectedMessage), outputPackageDir + "/plugin_" + convertToMessageName(selectedMessage) + ".xml", projectName);

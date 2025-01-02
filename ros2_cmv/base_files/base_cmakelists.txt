@@ -11,7 +11,7 @@ find_package(rviz_common REQUIRED)
 find_package(rviz_rendering REQUIRED)
 find_package(rviz_default_plugins REQUIRED)
 find_package(ros2_cmv REQUIRED)
-find_package(ros2_cmv_example REQUIRED)
+find_package(ros2_cmv_msgs REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 set(dependencies
@@ -20,11 +20,11 @@ set(dependencies
   rviz_rendering
   rviz_default_plugins
   ros2_cmv
-  ros2_cmv_example
+  ros2_cmv_msgs
   )
 
 set(CMAKE_AUTOMOC ON)
-set(MESSAGE_NAME "Example")
+set(MESSAGE_NAME "AllTypes")
 qt5_wrap_cpp(CUSTOM_MSG_MOC_FILES
   include/${PROJECT_NAME}/message_specific/${MESSAGE_NAME}/custom_msg_display.hpp
 )

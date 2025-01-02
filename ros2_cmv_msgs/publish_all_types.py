@@ -21,8 +21,8 @@ from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Range, CameraInf
 from visualization_msgs.msg import Marker, MarkerArray
 
 # Custom message
-# from ros2_cmv_cmake_example.msg import Example
-from ros2_cmv_example.msg import Example
+# from ros2_cmv_example_cmake.msg import Example
+from ros2_cmv_msgs.msg import AllTypes
 
 
 class CustomMessagePublisher(Node):
@@ -32,7 +32,7 @@ class CustomMessagePublisher(Node):
         super().__init__('custom_message_publisher')
 
         # Create publishers
-        self.custom_msg_publisher = self.create_publisher(Example, 'example_msg_topic', 10)
+        self.custom_msg_publisher = self.create_publisher(AllTypes, 'example_msg_topic', 10)
 
         self.get_logger().info("CustomMessagePublisher node has been started.")
 
@@ -371,7 +371,7 @@ class CustomMessagePublisher(Node):
         # --------------------------
         # Custom Message
         # --------------------------
-        custom_msg = Example()
+        custom_msg = AllTypes()
         custom_msg.header = header
         custom_msg.accel = accel_stamped
         custom_msg.accel_raw = accel

@@ -1,3 +1,24 @@
+/**
+    Copyright 2025 Suchetan Saravanan.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+*/
+
 #ifndef CMV_COMMON_HPP_
 #define CMV_COMMON_HPP_
 
@@ -52,7 +73,7 @@ namespace ros2_cmv
 
     inline GlobalValues &globalValues = GlobalValues::getInstance();
 
-// --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
     // GENERAL PURPOSE STRUCTS
 
     struct Message
@@ -61,7 +82,7 @@ namespace ros2_cmv
         std::string name;
     };
 
-// ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
     // STRING HELPERS
 
     // Function to trim whitespace from both ends of a string
@@ -70,29 +91,28 @@ namespace ros2_cmv
     // Function to split a string by whitespace
     std::vector<std::string> split(const std::string &s);
 
-
-// ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
     // CONVERSIONS FUNCTIONS
 
     // Function to convert ROS message type to C++ type
-    // ros2_cmv_example/Example -> ros2_cmv_example::msg::Example
+    // ros2_cmv_msgs/AllTypes -> ros2_cmv_msgs::msg::AllTypes
     std::string convertRosTypeToCpp(const std::string &ros_type);
 
-    // ros2_cm_example/Example -> Example
+    // ros2_cmv_all_types/AllTypes -> AllTypes
     std::string convertToMessageName(const std::string &ros_type);
 
     // Function to convert camel case to snake case
-    // Example -> example
+    // AllTypes -> all_types
     // Conversion logic ported to CPP from rosidl
     std::string convertCamelCaseToSnakeCase(const std::string &input);
 
-    // "ros2_cmv_example/Example" -> "ros2_cmv_example/msg/example.hpp"
+    // "ros2_cmv_msgs/AllTypes" -> "ros2_cmv_msgs/msg/all_types.hpp"
     std::string convertToIncludePath(const std::string &input);
 
-    // Function to convert "ros2_cmv_example/Example" -> "ros2_cmv_example"
+    // Function to convert "ros2_cmv_msgs/AllTypes" -> "ros2_cmv_msgs"
     std::string convertToPackageName(const std::string &input);
 
-    // Function to convert "ros2_cmv_example/Example" -> "ros2_cmv_example_example"
+    // Function to convert "ros2_cmv_msgs/AllTypes" -> "ros2_cmv_msgs_all_types"
     std::string convertToRvizPluginName(const std::string &input);
 };
 
