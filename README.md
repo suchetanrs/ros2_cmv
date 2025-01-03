@@ -6,7 +6,7 @@ ROS 2 - CMV (ROS 2 - Custom message visualizer) is a library that can be used to
 
 The plugins can be generated either with a GUI interface provided or by simply calling a CMake macro in your CMakeLists.txt where you create your ROS message.
 
-This works with the ```Humble``` ROS distro but using ```Jazzy``` or ```Rolling``` is recomended to support visualization for a larger group of message fields in your custom message. To see the fields that can be visualized in your custom message for your distro, please refer to [this page]().
+This works with the ```Humble``` ROS distro but using ```Jazzy``` or ```Rolling``` is recomended to support visualization for a larger group of message fields in your custom message. To see the fields that can be visualized in your custom message for your distro, please refer to [this page](SupportedTypes.md).
 
 # Usage
 
