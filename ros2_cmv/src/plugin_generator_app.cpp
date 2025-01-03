@@ -46,7 +46,7 @@ namespace ros2_cmv
 
         // Create an image label
         QLabel *imageLabel = new QLabel(this);
-        QPixmap image(QString::fromStdString(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/ros2_cmv_logo.jpg"));
+        QPixmap image(QString::fromStdString(getPackagePrefix("ros2_cmv") + "/share/ros2_cmv/base_files/ros2_cmv_logo.png"));
         imageLabel->setPixmap(image.scaled(150, 150, Qt::KeepAspectRatio));
         imageLabel->setAlignment(Qt::AlignRight);
         legendLayout->addWidget(imageLabel);

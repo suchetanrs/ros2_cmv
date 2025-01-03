@@ -217,7 +217,7 @@ install(
 )
 
 install(
-  FILES base_files/base_cmakelists.txt base_files/base_package.xml base_files/ros2_cmv_logo.jpg
+  FILES base_files/base_cmakelists.txt base_files/base_package.xml base_files/ros2_cmv_logo.png
   DESTINATION share/${PROJECT_NAME}/base_files
 )
 

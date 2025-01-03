@@ -1,12 +1,15 @@
-# std_msgs/Header header
+std_msgs/Header header
 geometry_msgs/PointStamped point1
-geometry_msgs/PointStamped point21
-geometry_msgs/PointStamped point2
+geometry_msgs/Point[] point
+geometry_msgs/Point point2
+geometry_msgs/PointStamped point3
 geometry_msgs/PolygonStamped polygon1
+sensor_msgs/Imu imu
+sensor_msgs/BatteryState battery
 geometry_msgs/PolygonStamped polygon3
 geometry_msgs/PolygonStamped polygon4
 geometry_msgs/PoseStamped pose
-geometry_msgs/PoseStamped pos2
+geometry_msgs/PoseStamped pose2
 geometry_msgs/PoseWithCovariance pose_with_covariance_raw
 geometry_msgs/PoseWithCovariance pose_with_covariance_raw2
 visualization_msgs/Marker marker
