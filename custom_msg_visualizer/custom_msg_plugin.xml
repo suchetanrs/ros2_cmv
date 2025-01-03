@@ -1,0 +1,6 @@
+<!-- This is just an example. -->
+<library path="custom_msg_display">
+  <class name="AllTypes" type="AllTypes::CustomMessageDisplay" base_class_type="rviz_common::Display">
+    <description>Show polar grid in rviz</description>
+  </class>
+</library>
