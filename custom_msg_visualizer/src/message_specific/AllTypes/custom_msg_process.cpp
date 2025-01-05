@@ -132,4 +132,10 @@ namespace custom_msg_visualizer
             enabledInstances["wrench_raw"]->processMessage(std::make_shared<const geometry_msgs::msg::Wrench>(msg->wrench_raw));
         }
     }
+
+    void processCustomMessageVectors(const CustomMessage::ConstSharedPtr &msg, std::shared_ptr<custom_msg_visualizer::ArrayMessageAssist> arrayAssist)
+    {
+        arrayAssist->processArray<geometry_msgs::msg::Pose>(msg->pose_custom_array, "pose_custom_array", "geometry_msgs/Pose");
+        arrayAssist->processArray<geometry_msgs::msg::PoseWithCovariance>(msg->pose_with_covariance_array, "pose_with_covariance_array", "geometry_msgs/PoseWithCovariance");
+    }
 };

@@ -60,6 +60,11 @@ static std::vector<std::string> variableTypes = {
     "geometry_msgs/Wrench",
 };
 
+static std::vector<std::string> variableTypesArrays = {
+    "geometry_msgs/Pose",
+    "geometry_msgs/PoseWithCovariance"
+};
+
 static std::vector<std::string> variableNames = {
     "accel",
     "accel_raw",
@@ -87,5 +92,10 @@ static std::vector<std::string> variableNames = {
     "twist_raw",
     "wrench",
     "wrench_raw",
+};
+
+static std::vector<std::string> variableNamesArrays = {
+    "pose_custom_array",
+    "pose_with_covariance_array",
 };
 #endif // CUSTOM_MSG_METADATA_HPP_

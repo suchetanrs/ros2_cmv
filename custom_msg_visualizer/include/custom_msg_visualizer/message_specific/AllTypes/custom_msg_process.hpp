@@ -26,10 +26,13 @@
 #include INCLUDE_PROJECT_HEADER(custom_msg_metadata.hpp)
 
 #include "custom_msg_visualizer/exposed_displays.hpp"
+#include "custom_msg_visualizer/array_assist.hpp"
 
 namespace custom_msg_visualizer
 {
     void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<IExposedDisplay>> &enabledInstances);
+
+    void processCustomMessageVectors(const CustomMessage::ConstSharedPtr &msg, std::shared_ptr<ArrayMessageAssist> arrayAssist);
 }
 
 #endif

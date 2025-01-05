@@ -30,8 +30,9 @@ namespace MESSAGE_NAME
 {
     CustomMessageDisplay::CustomMessageDisplay()
     {
-        // cleanup the messages that are not supported.
         auto displayFactoryInstance = custom_msg_visualizer::DisplayFactory::instance();
+        
+        // cleanup the messages that are not supported.
         bool allOk = true;
         for (size_t i = 0; i < variableTypes.size();)
         {
@@ -47,9 +48,26 @@ namespace MESSAGE_NAME
                 ++i;
             }
         }
+        
+        // cleanup array messages that are not supported.
+        for (size_t i = 0; i < variableTypesArrays.size();)
+        {
+            if (displayFactoryInstance.getCreators().count(variableTypesArrays[i]) == 0)
+            {
+                std::cout << "Display for : " << variableTypesArrays[i] << "[] is not created." << std::endl;
+                variableTypesArrays.erase(variableTypesArrays.begin() + i);
+                variableNamesArrays.erase(variableNamesArrays.begin() + i);
+                allOk = false;
+            }
+            else
+            {
+                ++i;
+            }
+        }
         if (!allOk)
             std::cout << "!!! Use the rolling distro of ROS for the support of these message types. !!! " << std::endl;
 
+        // create the display instances.
         enableAllMembersProperty_ = new rviz_common::properties::BoolProperty(
             "Enable all members",
             false,
@@ -100,6 +118,8 @@ namespace MESSAGE_NAME
             enabledInstances_[variableNames[i]] = instance;
             instance->onInitialize();
         }
+        arrayMessageAssist_ = std::make_shared<custom_msg_visualizer::ArrayMessageAssist>(context_);
+        arrayMessageAssist_->initialize();
     }
 
     void CustomMessageDisplay::update(float wall_dt, float ros_dt)
@@ -109,6 +129,7 @@ namespace MESSAGE_NAME
         {
             instance->update(wall_dt, ros_dt);
         }
+        arrayMessageAssist_->update(wall_dt, ros_dt);
     }
 
     void CustomMessageDisplay::reset()
@@ -119,12 +140,14 @@ namespace MESSAGE_NAME
         {
             instance->reset();
         }
+        arrayMessageAssist_->reset();
     }
 
     void CustomMessageDisplay::processMessage(CustomMessage::ConstSharedPtr msg)
     {
         std::lock_guard<std::mutex> lock(displayMutex_);
         processCustomMessage(msg, enabledInstances_);
+        processCustomMessageVectors(msg, arrayMessageAssist_);
     }
 
     void CustomMessageDisplay::updateMemberVisibility()

@@ -70,6 +70,7 @@ qt5_wrap_cpp(CUSTOM_MSG_MOC_FILES
 add_library(custom_msg_display
   src/message_specific/${MESSAGE_NAME}/custom_msg_process.cpp
   src/message_specific/${MESSAGE_NAME}/custom_msg_display.cpp
+  src/array_assist.cpp
   ${CUSTOM_MSG_MOC_FILES}
 )
 

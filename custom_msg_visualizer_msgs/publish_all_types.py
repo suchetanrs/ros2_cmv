@@ -397,7 +397,41 @@ class CustomMessagePublisher(Node):
         custom_msg.twist = twist_stamped
         custom_msg.twist_raw = twist
         custom_msg.wrench = wrench_stamped_msg
-        # custom_msg.wrench_raw = wrench_raw
+        custom_msg.wrench_raw = wrench_raw
+
+        # --------------------------
+        # Vectors
+        # --------------------------
+        pose_array_msg = PoseArray()
+        pose_array_msg.header = header
+        for i in range(3005):
+            # ----------- POSE -----------
+            pose = Pose()
+            pose.position.x = i * 0.1  # Incremental x position
+            # pose.position.y = i * -0.5  # Incremental y position
+            pose.position.y = 0.0  # Incremental y position
+            pose.position.z = 0.0      # Constant z position
+            pose.orientation.x = 0.0
+            pose.orientation.y = 0.0
+            pose.orientation.z = 0.0
+            pose.orientation.w = 1.0  # Unit quaternion for no rotation
+
+            # ----------- POSE WITH COVARIANCE -----------
+            custom_msg.pose_custom_array.append(pose)
+            new_pose_with_covariance = PoseWithCovarianceStamped()
+            new_pose_with_covariance.pose.pose.position.x = i * 0.1  # Incremental x position
+            new_pose_with_covariance.pose.pose.position.y = 2.0 # Incremental y position
+            new_pose_with_covariance.pose.pose.position.z = 0.0      # Constant z position
+            new_pose_with_covariance.pose.covariance = [
+                0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.1, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.1
+            ]
+            custom_msg.pose_with_covariance_array.append(new_pose_with_covariance.pose)
+
 
         # --------------------------
         # Logging (for debugging)
