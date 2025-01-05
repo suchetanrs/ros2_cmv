@@ -25,19 +25,22 @@
 namespace MESSAGE_NAME
 {
 
-    ArrayMessageAssist::ArrayMessageAssist(rviz_common::DisplayContext *context)
+    ArrayMessageAssist::ArrayMessageAssist(rviz_common::DisplayContext *context,
+                                           std::vector<std::string> variableNamesArrays, std::vector<std::string> variableTypesArrays)
     {
         context_ = context;
+        variableNamesArrays_ = variableNamesArrays;
+        variableTypesArrays_ = variableTypesArrays;
     }
 
     ArrayMessageAssist::~ArrayMessageAssist() {}
 
     void ArrayMessageAssist::initialize()
     {
-        for (size_t i = 0; i < variableNamesArrays.size(); ++i)
+        for (size_t i = 0; i < variableNamesArrays_.size(); ++i)
         {
-            std::cout << "Initializing array: " << variableNamesArrays[i] << std::endl;
-            displayArrayInstances_[variableNamesArrays[i]] = std::vector<std::shared_ptr<custom_msg_visualizer::IExposedDisplay>>();
+            // std::cout << "Initializing array: " << variableNamesArrays_[i] << std::endl;
+            displayArrayInstances_[variableNamesArrays_[i]] = std::vector<std::shared_ptr<custom_msg_visualizer::IExposedDisplay>>();
         }
     }
 

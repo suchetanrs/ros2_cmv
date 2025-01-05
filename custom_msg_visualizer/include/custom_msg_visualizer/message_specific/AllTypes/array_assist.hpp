@@ -26,15 +26,14 @@
 #include "rviz_common/view_manager.hpp"
 
 #include "custom_msg_visualizer/exposed_displays.hpp"
-#include "custom_msg_visualizer/cmv_macros.hpp"
-#include INCLUDE_PROJECT_HEADER(custom_msg_metadata.hpp)
 
 namespace MESSAGE_NAME
 {
     class ArrayMessageAssist
     {
     public:
-        ArrayMessageAssist(rviz_common::DisplayContext *context);
+        ArrayMessageAssist(rviz_common::DisplayContext *context,
+                           std::vector<std::string> variableNamesArrays, std::vector<std::string> variableTypesArrays);
         ~ArrayMessageAssist();
 
         void initialize();
@@ -46,7 +45,7 @@ namespace MESSAGE_NAME
         {
             if (displayArrayInstances_.count(key) == 0)
             {
-                throw std::runtime_error("Array not initialized:" + key);
+                return;
             }
             auto &displays = displayArrayInstances_[key];
 
@@ -55,7 +54,7 @@ namespace MESSAGE_NAME
                 size_t needed = array.size() - displays.size();
                 for (size_t i = 0; i < needed; ++i)
                 {
-                    std::cout << "Creating new display for: " << type << " " << i << std::endl;
+                    // std::cout << "Creating new display for: " << type << " " << i << std::endl;
                     auto newInstance = custom_msg_visualizer::DisplayFactory::instance().createDisplay(type, context_);
                     newInstance->onInitialize();
                     newInstance->onEnable();
@@ -73,6 +72,8 @@ namespace MESSAGE_NAME
     private:
         std::unordered_map<std::string, std::vector<std::shared_ptr<custom_msg_visualizer::IExposedDisplay>>> displayArrayInstances_;
         rviz_common::DisplayContext *context_;
+        std::vector<std::string> variableNamesArrays_;
+        std::vector<std::string> variableTypesArrays_;
     };
 
 }

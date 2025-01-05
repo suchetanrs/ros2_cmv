@@ -21,7 +21,6 @@ from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Range, CameraInf
 from visualization_msgs.msg import Marker, MarkerArray
 
 # Custom message
-from custom_msg_visualizer_msgs.msg import AllTypes
 from custom_msg_visualizer_example.msg import ExampleCMake
 
 
@@ -377,10 +376,9 @@ class CustomMessagePublisher(Node):
         custom_msg.accel_raw = accel
         custom_msg.camera_info = camera_info
         custom_msg.grid_cells = grid_cells
-        custom_msg.point1 = point1
-        custom_msg.point2 = point2
+        custom_msg.point = point1
         custom_msg.point_raw = point_raw
-        custom_msg.polygon1 = polygon1
+        custom_msg.polygon = polygon1
         custom_msg.polygon_raw = polygon_raw
         custom_msg.pose_array = pose_array
         custom_msg.path = path
@@ -416,7 +414,7 @@ class CustomMessagePublisher(Node):
             pose.orientation.y = 0.0
             pose.orientation.z = 0.0
             pose.orientation.w = 1.0  # Unit quaternion for no rotation
-            custom_msg.pose_custom_array.append(pose)
+            custom_msg.pose_raw_vector.append(pose)
 
             # ----------- POSE WITH COVARIANCE -----------
             new_pose_with_covariance = PoseWithCovarianceStamped()
@@ -431,7 +429,7 @@ class CustomMessagePublisher(Node):
                 0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
                 0.0, 0.0, 0.0, 0.0, 0.0, 0.1
             ]
-            custom_msg.pose_with_covariance_array2.append(new_pose_with_covariance.pose)
+            custom_msg.pose_with_covariance_raw_vector.append(new_pose_with_covariance.pose)
 
 
         # --------------------------

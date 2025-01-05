@@ -118,7 +118,7 @@ namespace MESSAGE_NAME
             enabledInstances_[variableNames[i]] = instance;
             instance->onInitialize();
         }
-        arrayMessageAssist_ = std::make_shared<ArrayMessageAssist>(context_);
+        arrayMessageAssist_ = std::make_shared<ArrayMessageAssist>(context_, variableNamesArrays, variableTypesArrays);
         arrayMessageAssist_->initialize();
     }
 
