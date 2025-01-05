@@ -21,10 +21,10 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   DEPENDENCIES builtin_interfaces geometry_msgs nav_msgs sensor_msgs visualization_msgs
 )
 
-generate_rviz_plugin(
-  "msg/ExampleCMake.msg"
-  "msg/ExampleCMake2.msg"
-)
+# generate_rviz_plugin(
+#   "msg/ExampleCMake.msg"
+#   "msg/ExampleCMake2.msg"
+# )
 
 ament_export_dependencies(rosidl_default_runtime)
 

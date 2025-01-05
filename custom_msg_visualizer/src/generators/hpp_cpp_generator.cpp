@@ -73,7 +73,7 @@ namespace custom_msg_visualizer
         return messages;
     }
 
-    void generateMetadataHeader(std::vector<Message> &messages, const std::string &output_file,
+    void generateMetadataHeader(std::vector<Message> &messages, std::vector<Message> &arrayMessages, const std::string &output_file,
                                 const std::string &CUSTOM_MESSAGE_HEADER, const std::string &CUSTOM_MESSAGE_TYPE)
     {
         std::ofstream ofs(output_file);
@@ -109,9 +109,32 @@ namespace custom_msg_visualizer
         }
         ofs << "};\n\n";
 
+        ofs << "static std::vector<std::string> variableTypesArrays = {\n";
+        for (const auto &msg : arrayMessages)
+        {
+            if (msg.type == "std_msgs/Header")
+            {
+                continue;
+            }
+            ofs << "    \"" << msg.type << "\",\n";
+        }
+        ofs << "};\n\n";
+
         // variableNames Vector
         ofs << "static std::vector<std::string> variableNames = {\n";
         for (const auto &msg : messages)
+        {
+            if (msg.type == "std_msgs/Header")
+            {
+                continue;
+            }
+            ofs << "    \"" << msg.name << "\",\n";
+        }
+        ofs << "};\n\n";
+
+        // variableNamesArrays Vector
+        ofs << "static std::vector<std::string> variableNamesArrays = {\n";
+        for (const auto &msg : arrayMessages)
         {
             if (msg.type == "std_msgs/Header")
             {
@@ -128,7 +151,7 @@ namespace custom_msg_visualizer
         std::cout << "Generated " << output_file << std::endl;
     }
 
-    void generateProcessMsgFile(std::vector<Message> &messages, const std::string &output_file)
+    void generateProcessMsgFile(std::vector<Message> &messages, std::vector<Message> &arrayMessages, const std::string &output_file)
     {
         std::ofstream ofs(output_file);
         if (!ofs.is_open())
@@ -141,7 +164,7 @@ namespace custom_msg_visualizer
         ofs << "// Generated with ros2_cmv. File has no license.\n\n";
         ofs << "#include \"custom_msg_visualizer/cmv_macros.hpp\"\n";
         ofs << "#include INCLUDE_PROJECT_HEADER(custom_msg_process.hpp)\n\n";
-        ofs << "namespace custom_msg_visualizer\n{\n";
+        ofs << "namespace MESSAGE_NAME\n{\n";
 
         // processCustomMessage Function
         ofs << "    void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<custom_msg_visualizer::IExposedDisplay>>& enabledInstances)\n";
@@ -160,6 +183,23 @@ namespace custom_msg_visualizer
             ofs << "        if(enabledInstances.find(\"" << var_name << "\") != enabledInstances.end()) {\n";
             ofs << "            enabledInstances[\"" << var_name << "\"]->processMessage(std::make_shared<const " << cpp_type << ">(msg->" << var_name << "));\n";
             ofs << "        }\n";
+        }
+        ofs << "    }\n\n";
+
+        // processCustomMessageVectors Function
+        ofs << "    void processCustomMessageVectors(const CustomMessage::ConstSharedPtr &msg, std::shared_ptr<ArrayMessageAssist> arrayAssist)\n";
+        ofs << "    {\n";
+        for (const auto &msg : arrayMessages)
+        {
+            if (msg.type == "std_msgs/Header")
+            {
+                continue;
+            }
+            std::string cpp_type = convertRosTypeToCpp(msg.type);
+            std::string var_name = msg.name;
+            ofs << "        arrayAssist->processArray<" << cpp_type << ">(msg->" << var_name << ", \"" << var_name << "\", \"" << msg.type << "\");\n";
+            // ofs << "        if(enabledInstances.find(\"" << var_name << "\") != enabledInstances.end()) {\n";
+            // ofs << "            enabledInstances[\"" << var_name << "\"]->processMessage(std::make_shared<const " << cpp_type << ">(msg->" << var_name << "));\n";
         }
         ofs << "    }\n};\n";
 

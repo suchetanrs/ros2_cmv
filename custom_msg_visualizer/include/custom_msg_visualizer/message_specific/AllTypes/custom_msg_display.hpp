@@ -55,7 +55,7 @@ namespace MESSAGE_NAME
         std::vector<rviz_common::properties::BoolProperty *> memberVisibilityProperties_;
         rviz_common::properties::BoolProperty *enableAllMembersProperty_;
         rviz_common::properties::Property *messageMemberProperty_;
-        std::shared_ptr<custom_msg_visualizer::ArrayMessageAssist> arrayMessageAssist_;
+        std::shared_ptr<ArrayMessageAssist> arrayMessageAssist_;
     };
 
 }; // namespace MESSAGE_NAME

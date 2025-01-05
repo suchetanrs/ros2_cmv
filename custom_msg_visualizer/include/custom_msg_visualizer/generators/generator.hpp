@@ -33,6 +33,10 @@ namespace custom_msg_visualizer
     // Function to check if a file is a valid ROS message type for generation
     bool checkMessageValidity(const std::string &msg_file_path, std::vector<int> &valid_line_idx);
 
+    void separateMessages(const std::vector<Message> &allMessages,
+                          std::vector<Message> &messages,
+                          std::vector<Message> &arrayMessages);
+
     void generateFiles(std::string &msgFilePath, std::string &outputPackageDir,
                        std::string &selectedMessage, std::string &projectName,
                        bool newPackage);

@@ -22,11 +22,11 @@
 #include "custom_msg_visualizer/cmv_macros.hpp"
 #include INCLUDE_PROJECT_HEADER(custom_msg_process.hpp)
 
-namespace custom_msg_visualizer
+namespace MESSAGE_NAME
 {
-    void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<IExposedDisplay>> &enabledInstances)
+    void processCustomMessage(const CustomMessage::ConstSharedPtr &msg, std::unordered_map<std::string, std::shared_ptr<custom_msg_visualizer::IExposedDisplay>> &enabledInstances)
     {
-        globalValues.setHeader(msg->header);
+        custom_msg_visualizer::globalValues.setHeader(msg->header);
         if (enabledInstances.find("accel") != enabledInstances.end())
         {
             enabledInstances["accel"]->processMessage(std::make_shared<const geometry_msgs::msg::AccelStamped>(msg->accel));
@@ -133,7 +133,7 @@ namespace custom_msg_visualizer
         }
     }
 
-    void processCustomMessageVectors(const CustomMessage::ConstSharedPtr &msg, std::shared_ptr<custom_msg_visualizer::ArrayMessageAssist> arrayAssist)
+    void processCustomMessageVectors(const CustomMessage::ConstSharedPtr &msg, std::shared_ptr<ArrayMessageAssist> arrayAssist)
     {
         arrayAssist->processArray<geometry_msgs::msg::Pose>(msg->pose_custom_array, "pose_custom_array", "geometry_msgs/Pose");
         arrayAssist->processArray<geometry_msgs::msg::PoseWithCovariance>(msg->pose_with_covariance_array, "pose_with_covariance_array", "geometry_msgs/PoseWithCovariance");

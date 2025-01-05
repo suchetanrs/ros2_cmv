@@ -105,6 +105,7 @@ macro(generate_rviz_plugin)
         add_library(${PROJECT_NAME}_${_message_name}_rviz_plugin
             src/message_specific/${_message_name}/custom_msg_process.cpp
             src/message_specific/${_message_name}/custom_msg_display.cpp
+            src/message_specific/${_message_name}/array_assist.cpp
             ${_generated_headers}
             ${MOC_FILES_${_message_name}}
         )
