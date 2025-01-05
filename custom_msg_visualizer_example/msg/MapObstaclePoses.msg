@@ -1,0 +1,4 @@
+std_msgs/Header header
+nav_msgs/OccupancyGrid map
+visualization_msgs/MarkerArray marker_array
+geometry_msgs/PoseWithCovariance[] pose_with_covariance_raw_vector

@@ -404,24 +404,123 @@ class CustomMessagePublisher(Node):
         pose_array_msg = PoseArray()
         pose_array_msg.header = header
         for i in range(35):
-            # ----------- POSE -----------
-            pose = Pose()
-            pose.position.x = i * 0.1  # Incremental x position
-            # pose.position.y = i * -0.5  # Incremental y position
-            pose.position.y = 0.0  # Incremental y position
-            pose.position.z = 0.0      # Constant z position
-            pose.orientation.x = 0.0
-            pose.orientation.y = 0.0
-            pose.orientation.z = 0.0
-            pose.orientation.w = 1.0  # Unit quaternion for no rotation
-            custom_msg.pose_raw_vector.append(pose)
+            #
+            # geometry_msgs/AccelStamped[] accel_vector
+            #
+            new_accel_stamped = AccelStamped()
+            new_accel_stamped.header = header
+            new_accel_stamped.accel.linear.x = float(i)
+            new_accel_stamped.accel.angular.z = float(i) * 0.1
+            # custom_msg.accel_vector.append(new_accel_stamped)
 
-            # ----------- POSE WITH COVARIANCE -----------
-            new_pose_with_covariance = PoseWithCovarianceStamped()
-            new_pose_with_covariance.pose.pose.position.x = i * 0.1  # Incremental x position
-            new_pose_with_covariance.pose.pose.position.y = 2.0 # Incremental y position
-            new_pose_with_covariance.pose.pose.position.z = 0.0      # Constant z position
-            new_pose_with_covariance.pose.covariance = [
+            #
+            # geometry_msgs/Accel[] accel_raw_vector
+            #
+            new_accel_raw = Accel()
+            new_accel_raw.linear.x = float(i) * 0.1
+            new_accel_raw.angular.z = float(i) * 0.01
+            # custom_msg.accel_raw_vector.append(new_accel_raw)
+
+            #
+            # sensor_msgs/CameraInfo[] camera_info_vector
+            #
+            new_camera_info = CameraInfo(header=header)
+            new_camera_info.height = 480
+            new_camera_info.width = 640
+            new_camera_info.distortion_model = 'plumb_bob'
+            new_camera_info.d = [0.0, 0.0, 0.0, 0.0, 0.0]
+            new_camera_info.k = [525.0, 0.0,   319.5,
+                            0.0,   525.0, 239.5,
+                            0.0,   0.0,   i]
+            new_camera_info.r = [1.0, 0.0, 0.0,
+                            0.0, 1.0, 0.0,
+                            0.0, 0.0, 1.0]
+            new_camera_info.p = [525.0, 0.0,   319.5, 0.0,
+                            0.0,   525.0, 239.5, 0.0,
+                            0.0,   0.0,   1.0,   0.0]
+            custom_msg.camera_info_vector.append(new_camera_info)
+
+            #
+            # nav_msgs/GridCells[] grid_cells_vector
+            #
+            new_grid_cells = GridCells()
+            new_grid_cells.header = header
+            new_grid_cells.cell_width = 1.0
+            new_grid_cells.cell_height = 1.0
+            # Example: append a single point in each GridCells
+            # new_grid_cells.cells.append(Point(x=float(i), y=0.0, z=0.0))
+            # custom_msg.grid_cells_vector.append(new_grid_cells)
+
+            #
+            # geometry_msgs/PointStamped[] point_vector
+            #
+            new_point_stamped = PointStamped()
+            new_point_stamped.header = header
+            new_point_stamped.point.x = float(i)
+            new_point_stamped.point.y = float(i) * 0.1
+            custom_msg.point_vector.append(new_point_stamped)
+
+            #
+            # geometry_msgs/Point[] point_raw_vector
+            #
+            new_point_raw = Point()
+            new_point_raw.x = float(i) + 0.5
+            new_point_raw.y = -1.0
+            new_point_raw.z = 2.0
+            custom_msg.point_raw_vector.append(new_point_raw)
+
+            #
+            # geometry_msgs/PolygonStamped[] polygon_vector
+            #
+            new_polygon_stamped = PolygonStamped()
+            new_polygon_stamped.header = header
+            new_polygon_stamped.polygon.points.append(Point32(x=float(i), y=0.0, z=0.0))
+            new_polygon_stamped.polygon.points.append(Point32(x=float(i) + 1.0, y=1.0, z=0.0))
+            custom_msg.polygon_vector.append(new_polygon_stamped)
+
+            #
+            # geometry_msgs/Polygon[] polygon_raw_vector
+            #
+            new_polygon_raw = Polygon()
+            # new_polygon_raw.points.append(Point32(x=float(i) * 0.1, y=0.1, z=0.0))
+            # custom_msg.polygon_raw_vector.append(new_polygon_raw)
+
+            #
+            # geometry_msgs/PoseStamped[] pose_vector
+            #
+            new_pose_stamped = PoseStamped()
+            new_pose_stamped.header = header
+            new_pose_stamped.pose.position.x = float(i) * 0.1
+            new_pose_stamped.pose.position.y = 0.0
+            new_pose_stamped.pose.orientation.w = 1.0
+            # custom_msg.pose_vector.append(new_pose_stamped)
+
+            #
+            # geometry_msgs/Pose[] pose_raw_vector
+            #
+            new_pose_raw = Pose()
+            new_pose_raw.position.x = float(i) * 0.2
+            new_pose_raw.position.y = -0.5
+            new_pose_raw.orientation.w = 1.0
+            # custom_msg.pose_raw_vector.append(new_pose_raw)
+
+            #
+            # geometry_msgs/PoseArray[] pose_array_vector
+            #
+            new_pose_array = PoseArray()
+            new_pose_array.header = header
+            # new_pose_array.poses.append(new_pose_stamped.pose)
+            # new_pose_array.poses.append(new_pose_raw)
+            # custom_msg.pose_array_vector.append(new_pose_array)
+
+            #
+            # geometry_msgs/PoseWithCovarianceStamped[] pose_with_covariance_vector
+            #
+            new_pose_cov_stamped = PoseWithCovarianceStamped()
+            new_pose_cov_stamped.header = header
+            new_pose_cov_stamped.pose.pose.position.x = float(i)
+            new_pose_cov_stamped.pose.pose.orientation.w = 1.0
+            new_pose_cov_stamped.pose.covariance = [
                 0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
                 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
                 0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
@@ -429,7 +528,160 @@ class CustomMessagePublisher(Node):
                 0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
                 0.0, 0.0, 0.0, 0.0, 0.0, 0.1
             ]
-            custom_msg.pose_with_covariance_raw_vector.append(new_pose_with_covariance.pose)
+            custom_msg.pose_with_covariance_vector.append(new_pose_cov_stamped)
+
+            #
+            # geometry_msgs/PoseWithCovariance[] pose_with_covariance_raw_vector
+            #
+            new_pose_cov_raw = PoseWithCovariance()
+            new_pose_cov_raw.pose.position.y = float(i) * 0.5
+            new_pose_cov_raw.pose.orientation.w = 1.0
+            new_pose_cov_raw.covariance = [
+                1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 1.0
+            ]
+            # custom_msg.pose_with_covariance_raw_vector.append(new_pose_cov_raw)
+
+            #
+            # nav_msgs/Path[] path_vector
+            #
+            new_path = Path()
+            new_path.header = header
+            new_path_pose = PoseStamped(header=header, pose=new_pose_raw)
+            # new_path.poses.append(new_path_pose)
+            # custom_msg.path_vector.append(new_path)
+
+            #
+            # nav_msgs/Odometry[] odometry_vector
+            #
+            new_odometry = Odometry()
+            new_odometry.header = header
+            new_odometry.child_frame_id = "base_link"
+            new_odometry.pose.pose.position.x = float(i) * 0.05
+            new_odometry.pose.pose.orientation.w = 1.0
+            # custom_msg.odometry_vector.append(new_odometry)
+
+            #
+            # nav_msgs/OccupancyGrid[] map_vector
+            #
+            new_map = OccupancyGrid()
+            new_map.header = header
+            new_map.info.resolution = 0.2
+            new_map.info.width = 5
+            new_map.info.height = 5
+            new_map.info.origin.orientation.w = 1.0
+            # Fill each map with a pattern or zeros
+            new_map.data = [0 if (x + y) % 2 == 0 else 100 for y in range(5) for x in range(5)]
+            # custom_msg.map_vector.append(new_map)
+
+            #
+            # visualization_msgs/Marker[] marker_vector
+            #
+            new_marker = Marker()
+            new_marker.header = header
+            new_marker.id = i
+            new_marker.type = Marker.SPHERE
+            new_marker.pose.position.x = float(i) * 0.3
+            new_marker.pose.orientation.w = 1.0
+            new_marker.scale.x = 0.5
+            new_marker.scale.y = 0.5
+            new_marker.scale.z = 0.5
+            new_marker.color = self._make_color(r=1.0, g=0.0, b=1.0, a=1.0)
+            # custom_msg.marker_vector.append(new_marker)
+
+            #
+            # visualization_msgs/MarkerArray[] marker_array_vector
+            #
+            new_marker_array = MarkerArray()
+            # new_marker_array.markers.append(new_marker)
+            # custom_msg.marker_array_vector.append(new_marker_array)
+
+            #
+            # sensor_msgs/LaserScan[] laser_scan_vector
+            #
+            new_laser_scan = LaserScan()
+            new_laser_scan.header = header
+            new_laser_scan.angle_min = -1.57
+            new_laser_scan.angle_max = 1.57
+            new_laser_scan.angle_increment = 0.05
+            new_laser_scan.range_min = 0.2
+            new_laser_scan.range_max = 10.0
+            num_samples = int((new_laser_scan.angle_max - new_laser_scan.angle_min) /
+                            new_laser_scan.angle_increment)
+            new_laser_scan.ranges = [2.0] * num_samples
+            # custom_msg.laser_scan_vector.append(new_laser_scan)
+
+            #
+            # sensor_msgs/PointCloud2[] point_cloud2_vector
+            #
+            new_pointcloud2 = PointCloud2()
+            new_pointcloud2.header = header
+            new_pointcloud2.height = 1
+            new_pointcloud2.width = 2
+            new_pointcloud2.is_dense = True
+            new_pointcloud2.is_bigendian = False
+            new_pointcloud2.fields = [
+                PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+                PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+                PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1)
+            ]
+            new_pointcloud2.point_step = 12
+            new_pointcloud2.row_step = new_pointcloud2.point_step * new_pointcloud2.width
+            # Minimal data example for 2 points
+            minimal_points = [float(i), 0.0, 0.0,
+                            float(i) + 1.0, 1.0, 1.0]
+            new_pointcloud2.data = struct.pack('6f', *minimal_points)
+            # custom_msg.point_cloud2_vector.append(new_pointcloud2)
+
+            #
+            # sensor_msgs/Range[] range_vector
+            #
+            new_range = Range()
+            new_range.header = header
+            new_range.radiation_type = Range.ULTRASOUND
+            new_range.field_of_view = 0.785398  # ~45 deg
+            new_range.min_range = 0.2
+            new_range.max_range = 4.0
+            new_range.range = 2.0 + (i * 0.01)
+            # custom_msg.range_vector.append(new_range)
+
+            #
+            # geometry_msgs/TwistStamped[] twist_vector
+            #
+            new_twist_stamped = TwistStamped()
+            new_twist_stamped.header = header
+            new_twist_stamped.twist.linear.x = float(i) * 0.05
+            new_twist_stamped.twist.angular.z = float(i) * 0.005
+            # custom_msg.twist_vector.append(new_twist_stamped)
+
+            #
+            # geometry_msgs/Twist[] twist_raw_vector
+            #
+            new_twist_raw = Twist()
+            new_twist_raw.linear.x = float(i)
+            new_twist_raw.angular.y = float(i) * 0.1
+            # custom_msg.twist_raw_vector.append(new_twist_raw)
+
+            #
+            # geometry_msgs/WrenchStamped[] wrench_vector
+            #
+            new_wrench_stamped = WrenchStamped()
+            new_wrench_stamped.header = header
+            new_wrench_stamped.wrench.force.x = float(i)
+            new_wrench_stamped.wrench.torque.z = float(i) * 0.1
+            # custom_msg.wrench_vector.append(new_wrench_stamped)
+
+            #
+            # geometry_msgs/Wrench[] wrench_raw_vector
+            #
+            new_wrench_raw = Wrench()
+            new_wrench_raw.force.y = float(i) * 0.2
+            new_wrench_raw.torque.x = float(i) * 0.05
+            # custom_msg.wrench_raw_vector.append(new_wrench_raw)
 
 
         # --------------------------
