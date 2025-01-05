@@ -9,6 +9,12 @@ The plugins can be generated either with a GUI interface provided or by simply c
 This works with the ```Humble``` ROS distro but using ```Jazzy``` or ```Rolling``` is recomended to support visualization for a larger group of message fields in your custom message. To see the fields that can be visualized in your custom message for your distro, please refer to [this page](SupportedTypes.md). 
 <br>**Please use the ```master``` branch for all the three supported distros.**
 
+<div align="center">
+  <img src="img/map_poses.gif" alt="Image 1" width="320"/>
+  <img src="img/robot_corridor.gif" alt="Image 2" width="320"/>
+  <img src="img/two_robots.gif" alt="Image 3" width="320"/>
+</div>
+
 # Building the package.
 
 ```bash
