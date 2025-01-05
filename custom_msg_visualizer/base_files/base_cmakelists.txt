@@ -36,6 +36,7 @@ include_directories(${rviz_default_plugins_INCLUDE_DIRS})
 add_library(${PROJECT_NAME}_${MESSAGE_NAME}_rviz_plugin
   src/message_specific/${MESSAGE_NAME}/custom_msg_process.cpp
   src/message_specific/${MESSAGE_NAME}/custom_msg_display.cpp
+  src/message_specific/${MESSAGE_NAME}/array_assist.cpp
   ${CUSTOM_MSG_MOC_FILES}
 )
 

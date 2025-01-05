@@ -3,10 +3,9 @@ geometry_msgs/AccelStamped accel
 geometry_msgs/Accel accel_raw
 sensor_msgs/CameraInfo camera_info
 nav_msgs/GridCells grid_cells
-geometry_msgs/PointStamped point1
-geometry_msgs/PointStamped point2
+geometry_msgs/PointStamped point
 geometry_msgs/Point point_raw
-geometry_msgs/PolygonStamped polygon1
+geometry_msgs/PolygonStamped polygon
 geometry_msgs/Polygon polygon_raw
 geometry_msgs/PoseStamped pose
 geometry_msgs/Pose pose_raw
@@ -25,3 +24,31 @@ geometry_msgs/TwistStamped twist
 geometry_msgs/Twist twist_raw
 geometry_msgs/WrenchStamped wrench
 geometry_msgs/Wrench wrench_raw
+
+# vectors
+# std_msgs/Header[] header_vector
+geometry_msgs/AccelStamped[] accel_vector
+geometry_msgs/Accel[] accel_raw_vector
+sensor_msgs/CameraInfo[] camera_info_vector
+nav_msgs/GridCells[] grid_cells_vector
+geometry_msgs/PointStamped[] point_vector
+geometry_msgs/Point[] point_raw_vector
+geometry_msgs/PolygonStamped[] polygon_vector
+geometry_msgs/Polygon[] polygon_raw_vector
+geometry_msgs/PoseStamped[] pose_vector
+geometry_msgs/Pose[] pose_raw_vector
+geometry_msgs/PoseArray[] pose_array_vector
+geometry_msgs/PoseWithCovarianceStamped[] pose_with_covariance_vector
+geometry_msgs/PoseWithCovariance[] pose_with_covariance_raw_vector
+nav_msgs/Path[] path_vector
+nav_msgs/Odometry[] odometry_vector
+nav_msgs/OccupancyGrid[] map_vector
+visualization_msgs/Marker[] marker_vector
+visualization_msgs/MarkerArray[] marker_array_vector
+sensor_msgs/LaserScan[] laser_scan_vector
+sensor_msgs/PointCloud2[] point_cloud2_vector
+sensor_msgs/Range[] range_vector
+geometry_msgs/TwistStamped[] twist_vector
+geometry_msgs/Twist[] twist_raw_vector
+geometry_msgs/WrenchStamped[] wrench_vector
+geometry_msgs/Wrench[] wrench_raw_vector

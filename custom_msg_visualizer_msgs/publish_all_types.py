@@ -21,7 +21,7 @@ from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Range, CameraInf
 from visualization_msgs.msg import Marker, MarkerArray
 
 # Custom message
-from custom_msg_visualizer_msgs.msg import AllTypes
+from custom_msg_visualizer_example.msg import ExampleCMake
 
 
 class CustomMessagePublisher(Node):
@@ -31,7 +31,7 @@ class CustomMessagePublisher(Node):
         super().__init__('custom_message_publisher')
 
         # Create publishers
-        self.custom_msg_publisher = self.create_publisher(AllTypes, 'all_types_topic', 10)
+        self.custom_msg_publisher = self.create_publisher(ExampleCMake, 'all_types_topic', 10)
 
         self.get_logger().info("CustomMessagePublisher node has been started.")
 
@@ -370,16 +370,15 @@ class CustomMessagePublisher(Node):
         # --------------------------
         # Custom Message
         # --------------------------
-        custom_msg = AllTypes()
+        custom_msg = ExampleCMake()
         custom_msg.header = header
         custom_msg.accel = accel_stamped
         custom_msg.accel_raw = accel
         custom_msg.camera_info = camera_info
         custom_msg.grid_cells = grid_cells
-        custom_msg.point1 = point1
-        custom_msg.point2 = point2
+        custom_msg.point = point1
         custom_msg.point_raw = point_raw
-        custom_msg.polygon1 = polygon1
+        custom_msg.polygon = polygon1
         custom_msg.polygon_raw = polygon_raw
         custom_msg.pose_array = pose_array
         custom_msg.path = path
@@ -397,7 +396,41 @@ class CustomMessagePublisher(Node):
         custom_msg.twist = twist_stamped
         custom_msg.twist_raw = twist
         custom_msg.wrench = wrench_stamped_msg
-        # custom_msg.wrench_raw = wrench_raw
+        custom_msg.wrench_raw = wrench_raw
+
+        # --------------------------
+        # Vectors
+        # --------------------------
+        pose_array_msg = PoseArray()
+        pose_array_msg.header = header
+        for i in range(35):
+            # ----------- POSE -----------
+            pose = Pose()
+            pose.position.x = i * 0.1  # Incremental x position
+            # pose.position.y = i * -0.5  # Incremental y position
+            pose.position.y = 0.0  # Incremental y position
+            pose.position.z = 0.0      # Constant z position
+            pose.orientation.x = 0.0
+            pose.orientation.y = 0.0
+            pose.orientation.z = 0.0
+            pose.orientation.w = 1.0  # Unit quaternion for no rotation
+            custom_msg.pose_raw_vector.append(pose)
+
+            # ----------- POSE WITH COVARIANCE -----------
+            new_pose_with_covariance = PoseWithCovarianceStamped()
+            new_pose_with_covariance.pose.pose.position.x = i * 0.1  # Incremental x position
+            new_pose_with_covariance.pose.pose.position.y = 2.0 # Incremental y position
+            new_pose_with_covariance.pose.pose.position.z = 0.0      # Constant z position
+            new_pose_with_covariance.pose.covariance = [
+                0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.1, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.1
+            ]
+            custom_msg.pose_with_covariance_raw_vector.append(new_pose_with_covariance.pose)
+
 
         # --------------------------
         # Logging (for debugging)

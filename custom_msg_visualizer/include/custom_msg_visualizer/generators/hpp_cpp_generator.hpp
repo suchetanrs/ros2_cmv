@@ -32,10 +32,10 @@ namespace custom_msg_visualizer
     std::vector<Message> parseMsgFile(const std::string &msg_file_path, std::vector<int> &valid_line_idx);
 
     // Function to generate custom_msg_metadata.hpp file.
-    void generateMetadataHeader(std::vector<Message> &messages, const std::string &output_file,
+    void generateMetadataHeader(std::vector<Message> &messages, std::vector<Message> &arrayMessages, const std::string &output_file,
                                 const std::string &CUSTOM_MESSAGE_HEADER, const std::string &CUSTOM_MESSAGE_TYPE);
 
-    void generateProcessMsgFile(std::vector<Message> &messages, const std::string &output_file);
+    void generateProcessMsgFile(std::vector<Message> &messages, std::vector<Message> &arrayMessages, const std::string &output_file);
 
     // Function to copy a file from input_path to output_path
     void copyFile(const std::string &input_path, const std::string &output_path);
