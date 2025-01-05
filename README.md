@@ -2,7 +2,7 @@
   <img src="custom_msg_visualizer/base_files/custom_msg_visualizer_logo.png" alt="Logo" width="300"/>
 </div>
 <br>
-ROS 2 - CMV (ROS 2 - Custom message visualizer) is a library that can be used to generate RViz plugins for your custom messages. 
+ROS 2 - CMV (ROS 2 - Custom message visualizer) is a library that can be used to generate RViz plugins to visualize your custom messages. 
 
 The plugins can be generated either with a GUI interface provided or by simply calling a CMake macro in your CMakeLists.txt where you create your ROS message.
 
@@ -21,7 +21,7 @@ colcon build --symlink-install
 Installation through deb packages - Soon 😉
 
 # Usage
-It might be better to try generating the rviz plugin for the custom message you want with the [GUI](#generating-a-plugin-with-the-gui) first in order to see how much of your message is actually visualizable. Once you are happy with the generated package, you can directly incorporate the macro within your ```CMakeLists``` to update the rviz plugin in case of changes in the message interface.
+It might be better to try generating the rviz plugin for the custom message you want with the [GUI](#generating-a-plugin-with-the-gui) first in order to see how much of your message is actually visualizable. Once you are happy with the generated package and the visualization, you can directly incorporate the macro within your ```CMakeLists``` to update or generate the rviz plugin in case of changes in the message interface.
 
 ## Generating a plugin for your message directly in your CMakeLists.
 
@@ -60,7 +60,7 @@ If you source your workspace, launch RViz and try to add a new display, your mes
 - Your custom message must have a valid header.
 - There should be atleast one valid line (green in the GUI). A line is deemed valid if the message type on that line is visualizable.
 - If you need a field to be visualizable, it needs to be a part of [this](SupportedTypes.md) list.
-- Your message type should be of the format ```<package_name>/<message_name>```. For example, ```Pose pose_field``` is not valid but ```geometry_msgs/Pose pose_field``` is. **This drawback will be fixed in a future release.**
+- Your message type should be of the format ```<package_name>/<message_name>``` or in case of arrays, ```<package_name>/<message_name>[]```. For example, ```Pose pose_field``` is not valid but ```geometry_msgs/Pose pose_field``` is. **This drawback will be fixed in a future release.**
 
 ## The RViz plugin
 

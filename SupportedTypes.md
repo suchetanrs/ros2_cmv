@@ -1,3 +1,7 @@
+* The below table shows the supported message types for each ROS distribution.
+* Arrays of each of the types which are supported are also supported.
+<br>
+
 | **Message Type**                     | **Humble** | **Jazzy** | **Rolling** |
 |--------------------------------------|:----------:|:---------:|:-----------:|
 | std_msgs/Header                      |      ✅     |     ✅     |      ✅      |
