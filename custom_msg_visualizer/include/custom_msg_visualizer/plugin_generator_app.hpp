@@ -37,6 +37,8 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QSettings>
+// Optional modern effects and widgets
+#include <QGraphicsDropShadowEffect>
 
 #include "custom_msg_visualizer/generators/generator.hpp"
 
