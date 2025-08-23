@@ -2,6 +2,21 @@
   <img src="custom_msg_visualizer/base_files/custom_msg_visualizer_logo.png" alt="Logo" width="300"/>
 </div>
 <br>
+
+## Build status
+<table border="1">
+  <tr>
+    <th>Build Status</th>
+    <th>Branch</th>
+    <th>Badge</th>
+  </tr>
+  <tr>
+    <th>Rolling</th>
+    <th>master</th>
+    <th><img src="https://github.com/suchetanrs/ros2_cmv/actions/workflows/ros2_distros.yml/badge.svg?branch=master" alt="Rolling"></th>
+  </tr>
+</table>
+
 ROS 2 - CMV (ROS 2 - Custom message visualizer) is a library that can be used to generate RViz plugins to visualize your custom messages. 
 
 The plugins can be generated either with a GUI interface provided or by simply calling a CMake macro in your CMakeLists.txt where you create your ROS message.
