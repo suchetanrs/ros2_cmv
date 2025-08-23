@@ -21,6 +21,13 @@
 
 #include "custom_msg_visualizer/plugin_generator_app.hpp"
 
+#include <QStyleFactory>
+#include <QPalette>
+#include <QFont>
+#include <QGraphicsDropShadowEffect>
+#include <QScrollBar>
+#include <QFrame>
+
 namespace custom_msg_visualizer
 {
     // Constructor
@@ -28,6 +35,8 @@ namespace custom_msg_visualizer
     {
         // Main vertical layout
         QVBoxLayout *mainLayout = new QVBoxLayout(this);
+        mainLayout->setSpacing(16);
+        mainLayout->setContentsMargins(18, 18, 18, 18);
 
         // ======================================= Section 0: Title and Legend =======================================
         // Create a horizontal layout for the legend and image
@@ -36,9 +45,9 @@ namespace custom_msg_visualizer
         // Create a legend as a QLabel
         QLabel *legend = new QLabel(this);
         legend->setText(
-            "<b>Legend:</b><br>"
-            "<span style='color:green;'><b>------</b></span> Visualizable message fields<br>"
-            "<span style='color:red;'><b>------</b></span> Non-visualizable message fields");
+            "<b>Legend</b><br>"
+            "<span style='color:#4CAF50;'><b>——</b></span> Visualizable message fields<br>"
+            "<span style='color:#FF5252;'><b>——</b></span> Non-visualizable message fields");
         legend->setAlignment(Qt::AlignLeft);
 
         // Add the legend to the horizontal layout
@@ -49,12 +58,27 @@ namespace custom_msg_visualizer
         QPixmap image(QString::fromStdString(getPackagePrefix("custom_msg_visualizer") + "/share/custom_msg_visualizer/base_files/custom_msg_visualizer_logo.png"));
         imageLabel->setPixmap(image.scaled(150, 150, Qt::KeepAspectRatio));
         imageLabel->setAlignment(Qt::AlignRight);
+        {
+            // QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(imageLabel);
+            // shadow->setBlurRadius(24);
+            // shadow->setOffset(0, 6);
+            // shadow->setColor(QColor(0, 0, 0, 180));
+            // imageLabel->setGraphicsEffect(shadow);
+        }
         legendLayout->addWidget(imageLabel);
         mainLayout->addLayout(legendLayout);
 
         // ======================================= Section 1: Content Display =======================================
         contentDisplay = new QTextEdit(this);
+        contentDisplay->setObjectName("contentDisplay");
         contentDisplay->setReadOnly(true);
+        {
+            QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(contentDisplay);
+            shadow->setBlurRadius(20);
+            shadow->setOffset(0, 8);
+            shadow->setColor(QColor(0, 0, 0, 120));
+            contentDisplay->setGraphicsEffect(shadow);
+        }
         mainLayout->addWidget(contentDisplay);
 
         // ======================================= Section 2: Interface Dropdown =======================================
@@ -62,6 +86,7 @@ namespace custom_msg_visualizer
 
         QLabel *dropdownLabel = new QLabel("Select Interface:", this);
         interfaceComboBox = new QComboBox(this);
+        interfaceComboBox->setObjectName("interfaceCombo");
 
         dropdownLayout->addWidget(dropdownLabel);
         dropdownLayout->addWidget(interfaceComboBox);
@@ -76,6 +101,8 @@ namespace custom_msg_visualizer
 
         // Initialize input fields with labels
         customPluginPath = new QLineEdit(this);
+        customPluginPath->setObjectName("pathLineEdit");
+        customPluginPath->setPlaceholderText("e.g., /home/your_user/ros2_ws");
 
         formLayout->addRow(new QLabel("Plugin output path:"), customPluginPath);
 
@@ -85,11 +112,15 @@ namespace custom_msg_visualizer
         QHBoxLayout *buttonLayout = new QHBoxLayout();
 
         // Process button (75% width)
-        processButton = new QPushButton("Process Inputs", this);
+        processButton = new QPushButton("Generate RViz Plugin", this);
+        processButton->setObjectName("primaryButton");
+        processButton->setMinimumHeight(44);
         buttonLayout->addWidget(processButton, 3); // Stretch factor 3
 
         // Save button (25% width)
         saveButton = new QPushButton("Save Settings", this);
+        saveButton->setObjectName("secondaryButton");
+        saveButton->setMinimumHeight(44);
         buttonLayout->addWidget(saveButton, 1); // Stretch factor 1
 
         // Add the horizontal button layout to the main layout
@@ -204,11 +235,11 @@ namespace custom_msg_visualizer
             QTextCharFormat format;
             if (lineColors.contains(i))
             {
-                format.setForeground(QColor("green"));
+                format.setForeground(QColor("#4CAF50"));
             }
             else
             {
-                format.setForeground(QColor("red"));
+                format.setForeground(QColor("#FF5252"));
             }
             cursor.insertText(lines[i], format);
             cursor.insertBlock();
@@ -270,6 +301,145 @@ namespace custom_msg_visualizer
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    // Global modern Fusion style with a refined dark palette
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
+
+    QPalette palette;
+    palette.setColor(QPalette::Window, QColor(18, 18, 18));
+    palette.setColor(QPalette::WindowText, QColor(230, 230, 230));
+    palette.setColor(QPalette::Base, QColor(23, 23, 23));
+    palette.setColor(QPalette::AlternateBase, QColor(28, 28, 28));
+    palette.setColor(QPalette::ToolTipBase, QColor(30, 30, 30));
+    palette.setColor(QPalette::ToolTipText, QColor(230, 230, 230));
+    palette.setColor(QPalette::Text, QColor(230, 230, 230));
+    palette.setColor(QPalette::Button, QColor(30, 30, 30));
+    palette.setColor(QPalette::ButtonText, QColor(235, 235, 235));
+    palette.setColor(QPalette::BrightText, QColor(255, 85, 85));
+    palette.setColor(QPalette::Highlight, QColor(76, 175, 80));
+    palette.setColor(QPalette::HighlightedText, QColor(0, 0, 0));
+    app.setPalette(palette);
+
+    // Modern system font fallback list
+    QFont appFont;
+    appFont.setFamily("Inter, Segoe UI, Roboto, Ubuntu, Noto Sans, Open Sans, Cantarell, Arial");
+    appFont.setPointSize(10);
+    app.setFont(appFont);
+
+    // Global stylesheet for a 2025-grade UI
+    const QString qss = R"(
+        QWidget { background-color: #121212; color: #E6E6E6; }
+        QLabel { color: #E6E6E6; }
+
+        /* Inputs */
+        QLineEdit, QTextEdit, QPlainTextEdit {
+            background-color: #1E1F22;
+            color: #E6E6E6;
+            border: 1px solid #2A2C2F;
+            border-radius: 10px;
+            padding: 10px 12px;
+            selection-background-color: #4CAF50;
+            selection-color: #000000;
+        }
+        QTextEdit#contentDisplay {
+            font-family: "JetBrains Mono", "Fira Code", "Ubuntu Mono", monospace;
+            font-size: 12px;
+            background-color: #17181A;
+            border: 1px solid #2A2C2F;
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        /* ComboBox */
+        QComboBox {
+            background-color: #1E1F22;
+            color: #E6E6E6;
+            border: 1px solid #2A2C2F;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+        QComboBox::drop-down { border: 0px; width: 28px; }
+        QComboBox::down-arrow {
+            image: none;
+            width: 0; height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #6BBF73;
+            margin-right: 10px;
+        }
+        QComboBox QAbstractItemView {
+            background-color: #1E1F22;
+            color: #E6E6E6;
+            selection-background-color: #2E7D32;
+            selection-color: #FFFFFF;
+            border: 1px solid #2A2C2F;
+            border-radius: 8px;
+        }
+
+        /* Buttons */
+        QPushButton {
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 600;
+            border: 1px solid #2A2C2F;
+            background-color: #1F2124;
+            color: #E6E6E6;
+        }
+        QPushButton:hover { background-color: #26282C; }
+        QPushButton:pressed { background-color: #2C2F33; }
+        QPushButton#primaryButton {
+            background-color: #2E7D32;
+            border: 1px solid #2E7D32;
+        }
+        QPushButton#primaryButton:hover { background-color: #388E3C; }
+        QPushButton#primaryButton:pressed { background-color: #2A7030; }
+        QPushButton#secondaryButton {
+            background-color: transparent;
+            border: 1px solid #3A3D41;
+            color: #D0D0D0;
+        }
+        QPushButton#secondaryButton:hover { background-color: #1B1C1F; }
+        QPushButton#secondaryButton:pressed { background-color: #16171A; }
+
+        /* Scrollbars */
+        QScrollBar:vertical {
+            background: #16171A;
+            width: 12px;
+            margin: 2px 0 2px 0;
+            border-radius: 6px;
+        }
+        QScrollBar::handle:vertical {
+            background: #2C2F33;
+            min-height: 24px;
+            border-radius: 6px;
+        }
+        QScrollBar::handle:vertical:hover { background: #3A3E44; }
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+
+        QScrollBar:horizontal {
+            background: #16171A;
+            height: 12px;
+            margin: 0 2px 0 2px;
+            border-radius: 6px;
+        }
+        QScrollBar::handle:horizontal {
+            background: #2C2F33;
+            min-width: 24px;
+            border-radius: 6px;
+        }
+        QScrollBar::handle:horizontal:hover { background: #3A3E44; }
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0; }
+
+        /* Tooltips */
+        QToolTip {
+            background-color: #2A2C2F;
+            color: #FFFFFF;
+            border: 1px solid #3A3D41;
+            padding: 6px 8px;
+            border-radius: 8px;
+        }
+    )";
+    app.setStyleSheet(qss);
 
     auto mainWindow = new custom_msg_visualizer::PluginGeneratorApp();
     mainWindow->setWindowTitle("RViz Plugin Generator");
