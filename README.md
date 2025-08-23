@@ -58,7 +58,7 @@ Adding the ```generate_rviz_plugin``` will create RViz plugins for your required
 
 After building the package, you can run the GUI using ```ros2 run custom_msg_visualizer plugin_generator_app```.<br> Input your message, the workspace path to generate the source files for the plugin and process the inputs.
 
-<img src="img/gui.png" alt="GUI" width="400"/>
+<img src="img/gui_new.png" alt="GUI" width="400"/>
 
 Once the plugin is generated, build your workspace using ```colcon build --symlink-install```. <br>
 If you source your workspace, launch RViz and try to add a new display, your message type should be visible.
