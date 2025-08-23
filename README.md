@@ -21,6 +21,7 @@ This works with the ```Humble``` ROS distro but using ```Jazzy``` or ```Rolling`
 source /opt/ros/$ROS_DISTRO/setup.bash
 cd <your_ws>/src
 git clone https://github.com/suchetanrs/ros2_cmv
+git submodule update --init --recursive
 cd ..
 colcon build --symlink-install
 ```

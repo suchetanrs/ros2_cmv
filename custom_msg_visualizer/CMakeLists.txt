@@ -22,6 +22,7 @@ find_package(rviz_default_plugins REQUIRED)
 find_package(custom_msg_visualizer_msgs REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(ros_babel_fish REQUIRED)
 
 
 ## --------------- GENERIC --------------- ##
@@ -29,7 +30,7 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(MESSAGE_NAME "AllTypes")
-include_directories(${rviz_default_plugins_INCLUDE_DIRS})
+include_directories(${rviz_default_plugins_INCLUDE_DIRS} ${ros_babel_fish_INCLUDE_DIRS})
 
 ## --------------- CMV_COMMON --------------- ##
 ## -------------------------------------------------- ##
@@ -200,6 +201,35 @@ target_link_libraries(plugin_generator_cmake cmv_generator)
 
 install(
   TARGETS plugin_generator_cmake
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# ## --------------- ARCHIVE --------------- ##
+# ## --------------------------------------- ##
+
+
+add_executable(babel_fish src/archive/babel_fish/babel_fish_full_cast.cpp)
+
+target_include_directories(babel_fish
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(babel_fish
+  rviz_common
+  pluginlib
+  rviz_rendering
+  rviz_default_plugins
+  custom_msg_visualizer_msgs
+  ament_index_cpp
+  ros_babel_fish
+)
+
+target_link_libraries(babel_fish)
+
+install(
+  TARGETS babel_fish
   DESTINATION lib/${PROJECT_NAME}
 )
 

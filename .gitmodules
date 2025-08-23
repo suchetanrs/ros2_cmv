@@ -1,0 +1,3 @@
+[submodule "ros_babel_fish"]
+	path = ros_babel_fish
+	url = https://github.com/LOEWE-emergenCITY/ros_babel_fish
