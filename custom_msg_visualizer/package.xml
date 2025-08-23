@@ -15,6 +15,7 @@
   <depend>rviz_default_plugins</depend>
   <depend>custom_msg_visualizer_msgs</depend>
   <depend>ament_index_cpp</depend>
+  <depend>ros_babel_fish</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

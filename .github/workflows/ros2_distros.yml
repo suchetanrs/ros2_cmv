@@ -14,16 +14,16 @@ jobs:
     strategy:
       matrix:
         ros_distribution:
-          - humble
-          - jazzy
+          # - humble
+          # - jazzy
           - rolling
 
         include:
-          - docker_image: ubuntu:jammy
-            ros_distribution: humble
+          # - docker_image: ubuntu:jammy
+          #   ros_distribution: humble
 
-          - docker_image: ubuntu:noble
-            ros_distribution: jazzy
+          # - docker_image: ubuntu:noble
+          #   ros_distribution: jazzy
 
           - docker_image: ubuntu:noble
             ros_distribution: rolling
